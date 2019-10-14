@@ -1,15 +1,17 @@
 # jomonPhasesAndPopulation
 This repository contains the C14 Dates, R scripts, and LaTeX source code associated with the manuscript "Combining Bayesian Chronological Models with the Aoristic/Monte-Carlo approach: a case study using a revised Chronology of Jomon Pottery Phases in Japan" by Crema, E.R., and Kobayashi, K.
 
+# File Structure
+
 ```
-│   README.md
-│   esm.Rmd       
+│   README.md ... this document
+│   esm.Rmd ... supplementary material with technical details and workflow.
 │
 |
 └───manuscript
-│   │   manuscript.tex
-│   │   bibfile.bib
-|   |   model2-names.bst
+│   │   manuscript.tex ... submitted manuscript
+│   │   bibfile.bib ... bibTeX file
+|   |   model2-names.bst ... LaTeX style file for elsevier
 |   |   
 │   │
 │   └───figures
@@ -17,16 +19,16 @@ This repository contains the C14 Dates, R scripts, and LaTeX source code associa
 │       │   posterior_jomon_phases.pdf
 │       │   pithousecounts_and_roc.pdf
 |       |   comparison_crema_imamura.pdf
-|       |   figureScript.R 
+|       |   figureScript.R ... R script for generating figures
 │   
 └───data
-|   │   c14dates.csv
-|   │   kobayashi2008.csv
-|   |   imamura1996.csv
+|   │   c14dates.csv ... C14 dates used for the Bayesian Chronological Models
+|   │   kobayashi2008.csv ... Start and End date of Jomon Phases used in Crema 2012
+|   |   imamura1996.csv ... Pithouse counts extracted from Imamura 1996 published graph.
 |   |   
 |   |
-|   └───suzuki1986
-|        |   nagano.csv
+|   └───suzuki1986 ... pithouse counts with time-span of existence
+|        |   nagano.csv 
 |        |   saitama.csv
 |        |   tokyo.csv  
 |        |   yamanashi.csv
@@ -34,34 +36,37 @@ This repository contains the C14 Dates, R scripts, and LaTeX source code associa
 |
 |
 └───R
-|   |   oxcalScriptGenerator.R
-|   |   oxcalOutputReader.R
-|   |   doubleMonteCarlo.R
-|   |   utilities.R
+|   |   oxcalScriptGenerator.R ... R script for generating oxcal Scripts
+|   |   oxcalOutputReader.R ... Functions for reading oxcal .js files
+|   |   doubleMonteCarlo.R ... R script for generating random dates of pithouse constructions
+|   |   utilities.R ... several utitlity functions.
 |
 |
 └───oxcal
-|   |   oxcalOutput.RData
+|   |   oxcalOutput.RData ... Aggregated R image file of oxcal output
 |   | 
 |   |
-|   └───submissionScripts
+|   └───submissionScripts ... oxcal submission scripts
 |   |    |   gaussian.oxcal
 |   |    |   uniform.oxcal
 |   |    |   trapezoid.oxcal
 |   | 
 |   |
-|   └───output
+|   └───output ... output data from OxCal
 |        |   mcmcGaussian.csv
 |        |   mcmcUniform.csv  
 |        |   mcmcTrapezoid.csv  
 |        |   gaussian.js
-|        |   uiform.js  
+|        |   uniform.js  
 |        |   trapezoid.js 
 |        |   gaussian.txt
-|        |   uiform.txt  
+|        |   uniform.txt  
 |        |   trapezoid.txt  
 |        |   gaussian.log
-|        |   uiform.log  
+|        |   uniform.log  
 |        |   trapezoid.log  
 ```
+
+
+
 
