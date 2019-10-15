@@ -2277,15 +2277,6 @@ R_Date("BETA-233177",11690,40);
 Sigma_Boundary("End S1-2");
 };
 Sequence(){
-Sigma_Boundary("Start NA");
-Phase("NA")
-{
-R_Date("NA",NA,NA);
-R_Date("",,);
-};
-Sigma_Boundary("End NA");
-};
-Sequence(){
 Sigma_Boundary("Start Z6");
 Phase("Z6")
 {
@@ -2736,8 +2727,6 @@ Date("=Start S2-1");
 Date("=End S2-1");
 Date("=Start S1-2");
 Date("=End S1-2");
-Date("=Start NA");
-Date("=End NA");
 Date("=Start Z6");
 Date("=End Z6");
 Date("=Start Z2");

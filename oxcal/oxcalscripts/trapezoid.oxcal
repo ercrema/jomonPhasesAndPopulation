@@ -2557,23 +2557,6 @@ End("End of End S1-2");
 };
 };
 Sequence(){
-Boundary("Start NA"){
-Start("Start of Start NA");
-Transition("Period of Start NA");
-End("End of Start NA");
-};
-Phase("NA")
-{
-R_Date("NA",NA,NA);
-R_Date("",,);
-};
-Boundary("End NA"){
-Start("Start of End NA");
-Transition("Period of End NA");
-End("End of End NA");
-};
-};
-Sequence(){
 Boundary("Start Z6"){
 Start("Start of Start Z6");
 Transition("Period of Start Z6");
@@ -3150,10 +3133,6 @@ Date("=Start of Start S1-2");
 Date("=End of Start S1-2");
 Date("=Start of End S1-2");
 Date("=End of End S1-2");
-Date("=Start of Start NA");
-Date("=End of Start NA");
-Date("=Start of End NA");
-Date("=End of End NA");
 Date("=Start of Start Z6");
 Date("=End of Start Z6");
 Date("=Start of End Z6");
