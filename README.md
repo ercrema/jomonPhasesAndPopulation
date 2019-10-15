@@ -33,6 +33,7 @@ This repository contains the C14 Dates, R scripts, and LaTeX source code associa
 |        |   tokyo.csv  
 |        |   yamanashi.csv
 |        |   kanagawa.csv   
+|        |   conversion.csv
 |
 |
 └───R
@@ -69,4 +70,14 @@ This repository contains the C14 Dates, R scripts, and LaTeX source code associa
 
 
 
+# R Package Used
 
+* trapezoid_2.0-0
+* oxcAAR_1.0.0
+* rcarbon_1.2.0
+* dplyr_0.8.3
+* readr_1.3.1
+* magrittr_1.5
+
+
+#
