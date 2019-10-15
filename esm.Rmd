@@ -1,0 +1,60 @@
+---
+title: "Electronic Supplementary Material"
+author: "Enrico R. Crema"
+date: "15/10/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Data Preparation and Outlier Analysis
+
+Read Data
+```{r}
+c14data = read.csv("./data/c14dates.csv")
+```
+
+For each set of dates from the same object we used OxCal's outlier analysis (REF) using bespoke R function (`outlierExcluder()`) which generates an oxcal script that is submitted and executed in R locally (using the `oxcAAR` package). The function utilises a Gaussian outlier model (`Outlier_Model("",N(0,2),0,"s")`), with an outlier probability of 0.05 for each specimen. If the total agreement index is above 60 and chi squared test has a p-value above 0.05, all dates are returned. If either of the conditions are not met, the function eliminatesthe date with the highest probability of being an outlier, and reruns the outlier model. This process is repeated untill the two conditions are met. The resulting output provide contains a data.frame which records whether a specific date was excluded or not (column `exclude` set to either TRUE or FALSE). If a set was composed by two dates, and the two conditions were not metm, both dates were returned with `exclude` set to TRUE.  
+
+The script below applies this routine to all sets of dates assigned to the same object (i.e. dates from the same site with the same `SampleID`, uniquely labelled with the field `CombineGroup`). The process adds the field `outlier` to the data.frame `c14db` recording the outcome of the outlier function. The last line of the scripts eliminates dates regarded as outlier in this process:
+
+```{r,eval=TRUE,results='hide'}
+source("./R/outlierAnalysis.R")
+grps = unique(c14data$CombineGroup)
+grps = grps[which(!is.na(grps))]
+c14data$outlier=FALSE
+
+for (i in 1:length(grps))
+{
+	print(paste0(i," out of ",length(grps)))
+	tmp=subset(c14data,CombineGroup==grps[i])
+	tmp2=outlierExcluder(c14=tmp$CRA,errors=tmp$Error,id=tmp$LabCode)
+	c14data$outlier[match(tmp2$df$id,c14data$LabCode)]=tmp2$df$exclude
+}
+#remove outliers
+c14data=subset(c14data,!outlier)
+```
+
+The output of the function above is stored in the R image file `./R_images/c14data.RData`.
+
+# Bayesian Phase Modelling
+
+
+
+
+
+
+
+# Step 2
+* Oxcal Script generator in brief
+* Submission, and retrieval function
+* Removal of low agreement index dates, and resubmission
+
+# Step 3
+* Pithouse data preparation
+* Monte-Carlo Sampling
+* Visualisation
+
+
