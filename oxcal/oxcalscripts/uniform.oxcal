@@ -1935,8 +1935,8 @@ R_Date("MTC-10638",6015,45);
 Boundary("End S8");
 };
 Sequence(){
-Boundary("Start S1-1");
-Phase("S1-1")
+Boundary("Start S1.1");
+Phase("S1.1")
 {
 R_Combine("Combination63")
 {
@@ -2009,7 +2009,7 @@ R_Date("IAAA-120602",13404,45);
 R_Date("IAAA-120599",13443,48);
 R_Date("IAAA-120594",13530,41);
 };
-Boundary("End S1-1");
+Boundary("End S1.1");
 };
 Sequence(){
 Boundary("Start S0");
@@ -2035,8 +2035,8 @@ R_Date("IAAA-120604",13991,47);
 Boundary("End S0");
 };
 Sequence(){
-Boundary("Start S2-2");
-Phase("S2-2")
+Boundary("Start S2.2");
+Phase("S2.2")
 {
 R_Date("BETA-113349",10030,50);
 R_Date("IAAA-82647",11820,50);
@@ -2077,11 +2077,11 @@ R_Date("KSU-1015",10070,55);
 R_Date("PLD-11455",10215,30);
 R_Date("IAAA-30049",10160,60);
 };
-Boundary("End S2-2");
+Boundary("End S2.2");
 };
 Sequence(){
-Boundary("Start S2-1");
-Phase("S2-1")
+Boundary("Start S2.1");
+Phase("S2.1")
 {
 R_Combine("Combination64")
 {
@@ -2190,11 +2190,11 @@ R_Date("BETA-167672",11390,50);
 R_Date("BETA-170267",10910,60);
 R_Date("IAAA-170647",11165,35);
 };
-Boundary("End S2-1");
+Boundary("End S2.1");
 };
 Sequence(){
-Boundary("Start S1-2");
-Phase("S1-2")
+Boundary("Start S1.2");
+Phase("S1.2")
 {
 R_Date("PLD-18854",11725,35);
 R_Date("IAAA-10047",11760,50);
@@ -2274,7 +2274,7 @@ R_Date("BETA-243824",11470,60);
 R_Date("BETA-233176",11480,60);
 R_Date("BETA-233177",11690,40);
 };
-Boundary("End S1-2");
+Boundary("End S1.2");
 };
 Sequence(){
 Boundary("Start Z6");
@@ -2717,16 +2717,16 @@ Date("=Start S3");
 Date("=End S3");
 Date("=Start S8");
 Date("=End S8");
-Date("=Start S1-1");
-Date("=End S1-1");
+Date("=Start S1.1");
+Date("=End S1.1");
 Date("=Start S0");
 Date("=End S0");
-Date("=Start S2-2");
-Date("=End S2-2");
-Date("=Start S2-1");
-Date("=End S2-1");
-Date("=Start S1-2");
-Date("=End S1-2");
+Date("=Start S2.2");
+Date("=End S2.2");
+Date("=Start S2.1");
+Date("=End S2.1");
+Date("=Start S1.2");
+Date("=End S1.2");
 Date("=Start Z6");
 Date("=End Z6");
 Date("=Start Z2");

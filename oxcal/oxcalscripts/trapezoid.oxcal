@@ -2175,12 +2175,12 @@ End("End of End S8");
 };
 };
 Sequence(){
-Boundary("Start S1-1"){
-Start("Start of Start S1-1");
-Transition("Period of Start S1-1");
-End("End of Start S1-1");
+Boundary("Start S1.1"){
+Start("Start of Start S1.1");
+Transition("Period of Start S1.1");
+End("End of Start S1.1");
 };
-Phase("S1-1")
+Phase("S1.1")
 {
 R_Combine("Combination63")
 {
@@ -2253,10 +2253,10 @@ R_Date("IAAA-120602",13404,45);
 R_Date("IAAA-120599",13443,48);
 R_Date("IAAA-120594",13530,41);
 };
-Boundary("End S1-1"){
-Start("Start of End S1-1");
-Transition("Period of End S1-1");
-End("End of End S1-1");
+Boundary("End S1.1"){
+Start("Start of End S1.1");
+Transition("Period of End S1.1");
+End("End of End S1.1");
 };
 };
 Sequence(){
@@ -2291,12 +2291,12 @@ End("End of End S0");
 };
 };
 Sequence(){
-Boundary("Start S2-2"){
-Start("Start of Start S2-2");
-Transition("Period of Start S2-2");
-End("End of Start S2-2");
+Boundary("Start S2.2"){
+Start("Start of Start S2.2");
+Transition("Period of Start S2.2");
+End("End of Start S2.2");
 };
-Phase("S2-2")
+Phase("S2.2")
 {
 R_Date("BETA-113349",10030,50);
 R_Date("IAAA-82647",11820,50);
@@ -2337,19 +2337,19 @@ R_Date("KSU-1015",10070,55);
 R_Date("PLD-11455",10215,30);
 R_Date("IAAA-30049",10160,60);
 };
-Boundary("End S2-2"){
-Start("Start of End S2-2");
-Transition("Period of End S2-2");
-End("End of End S2-2");
+Boundary("End S2.2"){
+Start("Start of End S2.2");
+Transition("Period of End S2.2");
+End("End of End S2.2");
 };
 };
 Sequence(){
-Boundary("Start S2-1"){
-Start("Start of Start S2-1");
-Transition("Period of Start S2-1");
-End("End of Start S2-1");
+Boundary("Start S2.1"){
+Start("Start of Start S2.1");
+Transition("Period of Start S2.1");
+End("End of Start S2.1");
 };
-Phase("S2-1")
+Phase("S2.1")
 {
 R_Combine("Combination64")
 {
@@ -2458,19 +2458,19 @@ R_Date("BETA-167672",11390,50);
 R_Date("BETA-170267",10910,60);
 R_Date("IAAA-170647",11165,35);
 };
-Boundary("End S2-1"){
-Start("Start of End S2-1");
-Transition("Period of End S2-1");
-End("End of End S2-1");
+Boundary("End S2.1"){
+Start("Start of End S2.1");
+Transition("Period of End S2.1");
+End("End of End S2.1");
 };
 };
 Sequence(){
-Boundary("Start S1-2"){
-Start("Start of Start S1-2");
-Transition("Period of Start S1-2");
-End("End of Start S1-2");
+Boundary("Start S1.2"){
+Start("Start of Start S1.2");
+Transition("Period of Start S1.2");
+End("End of Start S1.2");
 };
-Phase("S1-2")
+Phase("S1.2")
 {
 R_Date("PLD-18854",11725,35);
 R_Date("IAAA-10047",11760,50);
@@ -2550,10 +2550,10 @@ R_Date("BETA-243824",11470,60);
 R_Date("BETA-233176",11480,60);
 R_Date("BETA-233177",11690,40);
 };
-Boundary("End S1-2"){
-Start("Start of End S1-2");
-Transition("Period of End S1-2");
-End("End of End S1-2");
+Boundary("End S1.2"){
+Start("Start of End S1.2");
+Transition("Period of End S1.2");
+End("End of End S1.2");
 };
 };
 Sequence(){
@@ -3113,26 +3113,26 @@ Date("=Start of Start S8");
 Date("=End of Start S8");
 Date("=Start of End S8");
 Date("=End of End S8");
-Date("=Start of Start S1-1");
-Date("=End of Start S1-1");
-Date("=Start of End S1-1");
-Date("=End of End S1-1");
+Date("=Start of Start S1.1");
+Date("=End of Start S1.1");
+Date("=Start of End S1.1");
+Date("=End of End S1.1");
 Date("=Start of Start S0");
 Date("=End of Start S0");
 Date("=Start of End S0");
 Date("=End of End S0");
-Date("=Start of Start S2-2");
-Date("=End of Start S2-2");
-Date("=Start of End S2-2");
-Date("=End of End S2-2");
-Date("=Start of Start S2-1");
-Date("=End of Start S2-1");
-Date("=Start of End S2-1");
-Date("=End of End S2-1");
-Date("=Start of Start S1-2");
-Date("=End of Start S1-2");
-Date("=Start of End S1-2");
-Date("=End of End S1-2");
+Date("=Start of Start S2.2");
+Date("=End of Start S2.2");
+Date("=Start of End S2.2");
+Date("=End of End S2.2");
+Date("=Start of Start S2.1");
+Date("=End of Start S2.1");
+Date("=Start of End S2.1");
+Date("=End of End S2.1");
+Date("=Start of Start S1.2");
+Date("=End of Start S1.2");
+Date("=Start of End S1.2");
+Date("=End of End S1.2");
 Date("=Start of Start Z6");
 Date("=End of Start Z6");
 Date("=Start of End Z6");
