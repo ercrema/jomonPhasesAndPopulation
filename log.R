@@ -77,8 +77,6 @@ postTrapezoid=convertToArray(trapezoid.samples,type="trapezium",phases)
 
 
 ## Prepare Pithouse Data ####
-source("./R/utilities.R")
-phases =c("S0","S1-1","S1-2","S2-1","S2-2",paste0("S",3:8),paste0("Z",1:7),"C1","C234","C56","C78",paste0("C",9:14),paste0("K",1:8),paste0("B",1:6))
 nagano = read.csv("./data/suzuki/nagano.csv",stringsAsFactors = FALSE)
 kanagawa = read.csv("./data/suzuki/kanagawa.csv",stringsAsFactors = FALSE)
 yamanashi = read.csv("./data/suzuki/yamanashi.csv",stringsAsFactors = FALSE)
@@ -106,20 +104,6 @@ for (i in 1:length(pthlist))
 
 res=lapply(res,orgTable) #orgTable converts aggregated counts into a data.frame with 1 house per row
 pithouseData=rbind.data.frame(res[[1]],res[[2]],res[[3]],res[[4]],res[[5]]) #combine to a single data.frame
-
-## Optional? 
-#Fix S1 and S2s
-pithouseData$StartPhase=as.character(pithouseData$StartPhase)
-pithouseData$EndPhase=as.character(pithouseData$EndPhase)
-pithouseData$StartPhase[which(pithouseData$StartPhase=="S1-1")]="S1.1"
-pithouseData$StartPhase[which(pithouseData$StartPhase=="S1-2")]="S1.2"
-pithouseData$StartPhase[which(pithouseData$StartPhase=="S2-1")]="S2.1"
-pithouseData$StartPhase[which(pithouseData$StartPhase=="S2-2")]="S2.2"
-pithouseData$EndPhase[which(pithouseData$EndPhase=="S1-1")]="S1.1"
-pithouseData$EndPhase[which(pithouseData$EndPhase=="S1-2")]="S1.2"
-pithouseData$EndPhase[which(pithouseData$EndPhase=="S2-1")]="S2.1"
-pithouseData$EndPhase[which(pithouseData$EndPhase=="S2-2")]="S2.2"
-
 
 # Simulate Pithouse Dates ####
 
