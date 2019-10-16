@@ -52,36 +52,29 @@ c14data.uniform.rerun = left_join(c14data,uniform.agreement$df,by=x("LabCode"="i
 c14data.trapezoid.rerun = left_join(c14data,trapezoid.agreement$df,by=x("LabCode"="id")) %>%
   subset(agreement>60|combine.agreement>60)
 
-# Resubmission to OxCal (to edit)
+# Resubmission to OxCal 
 
 oxcalScriptGen(id=c14data.gaussian.rerun$LabCode,c14age=c14data.gaussian.rerun$CRA,errors=c14data.gaussian.rerun$Error,group=c14data.gaussian.rerun$CombineGroup,phases=c14data.gaussian.rerun$PhaseAnalysis,fn="./oxcal/oxcalscripts/gaussianR.oxcal",mcname="mcmcGaussianR",model="gaussian")
 oxcalScriptGen(id=c14data.uniform.rerun$LabCode,c14age=c14data.uniform.rerun$CRA,errors=c14data.uniform.rerun$Error,group=c14data.uniform.rerun$CombineGroup,phases=c14data.uniform.rerun$PhaseAnalysis,fn="./oxcal/oxcalscripts/uniformR.oxcal",mcname="mcmcUniformR",model="uniform")
 oxcalScriptGen(id=c14data.trapezoid.rerun$LabCode,c14age=c14data.trapezoid.rerun$CRA,errors=c14data.trapezoid.rerun$Error,group=c14data.trapezoid.rerun$CombineGroup,phases=c14data.trapezoid.rerun$PhaseAnalysis,fn="./oxcal/oxcalscripts/trapezoidR.oxcal",mcname="mcmcTrapezoidR",model="trapezoid")
 
+# Read re-run results ####
 
-
-
+gaussian.agreement = oxcalReadjs(x=df, model='gaussianR',path='../oxcal/results/')
+uniform.agreement = oxcalReadjs(x=df, model='uniformR',path='../oxcal/results/')
+trapezoid.agreement = oxcalReadjs(x=df, model='trapezoidR',path='../oxcal/results/')
 
 # Read MCMC samples (excluding first (pass number) and last (empty) column)
-gaussian.samples = read.csv("../oxcal/oxcalOnlineResults/mcmcGaussian.csv")[,-c(1,86)] 
-uniform.samples = read.csv("../oxcal/oxcalOnlineResults/mcmcUniform.csv")[,-c(1,86)]
-trapezoid.samples = read.csv("../oxcal/oxcalOnlineResults/mcmcTrapezoid.csv")[,-c(1,170)]
+gaussian.samples = read.csv("../oxcal/oxcalOnlineResults/mcmcGaussianR.csv")[,-c(1,86)] 
+uniform.samples = read.csv("../oxcal/oxcalOnlineResults/mcmcUniformR.csv")[,-c(1,86)]
+trapezoid.samples = read.csv("../oxcal/oxcalOnlineResults/mcmcTrapezoidR.csv")[,-c(1,170)]
 
 # Convert into an Array
 phases =c("S0","S1.1","S1.2","S2.1","S2.2",paste0("S",3:8),paste0("Z",1:7),"C1","C234","C56","C78",paste0("C",9:14),paste0("K",1:8),paste0("B",1:6))
-postGaussian=convertToArray(model0a.samples,type="gaussian",phases)
-postUniform=convertToArray(model0b.samples,type="uniform",phases)
-postTrapezoidc=convertToArray(model0c.samples,type="trapezium",phases)
+postGaussian=convertToArray(gaussian.samples,type="gaussian",phases)
+postUniform=convertToArray(uniform.samples,type="uniform",phases)
+postTrapezoid=convertToArray(trapezoid.samples,type="trapezium",phases)
 
-
-
-
-
-
-
-
-
-## Plot Posterior Phases ####
 
 ## Prepare Pithouse Data ####
 source("./R/utilities.R")
@@ -113,6 +106,20 @@ for (i in 1:length(pthlist))
 
 res=lapply(res,orgTable) #orgTable converts aggregated counts into a data.frame with 1 house per row
 pithouseData=rbind.data.frame(res[[1]],res[[2]],res[[3]],res[[4]],res[[5]]) #combine to a single data.frame
+
+## Optional? 
+#Fix S1 and S2s
+pithouseData$StartPhase=as.character(pithouseData$StartPhase)
+pithouseData$EndPhase=as.character(pithouseData$EndPhase)
+pithouseData$StartPhase[which(pithouseData$StartPhase=="S1-1")]="S1.1"
+pithouseData$StartPhase[which(pithouseData$StartPhase=="S1-2")]="S1.2"
+pithouseData$StartPhase[which(pithouseData$StartPhase=="S2-1")]="S2.1"
+pithouseData$StartPhase[which(pithouseData$StartPhase=="S2-2")]="S2.2"
+pithouseData$EndPhase[which(pithouseData$EndPhase=="S1-1")]="S1.1"
+pithouseData$EndPhase[which(pithouseData$EndPhase=="S1-2")]="S1.2"
+pithouseData$EndPhase[which(pithouseData$EndPhase=="S2-1")]="S2.1"
+pithouseData$EndPhase[which(pithouseData$EndPhase=="S2-2")]="S2.2"
+
 
 # Simulate Pithouse Dates ####
 
