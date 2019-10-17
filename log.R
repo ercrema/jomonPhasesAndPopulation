@@ -7,7 +7,7 @@ source("./R/utilities.R")
 source("./R/oxcalReadjs.R")
 source("./R/oxcalScriptCreator.R")
 source("./R/outlierAnalysis.R")
-
+source("./R/mcsim.R")
 
 
 ## Read Data ####
@@ -106,6 +106,29 @@ res=lapply(res,orgTable) #orgTable converts aggregated counts into a data.frame 
 pithouseData=rbind.data.frame(res[[1]],res[[2]],res[[3]],res[[4]],res[[5]]) #combine to a single data.frame
 
 # Simulate Pithouse Dates ####
+nsim = 1000
+simGaussian=mcsim(pithouseData,nsim=1000,posterior=postGaussian,weights="variance")
+simUniform=mcsim(pithouseData,nsim=1000,posterior=postUniform,weights="variance")
+simTrapezoid=mcsim(pithouseData,nsim=1000,posterior=postTrapezoid,weights="variance")
+
+# count for each 100-year block
+posteriors = list(gaussian=simGaussian,uniform=simUniform,trapezoid=simTrapezoid)
+tblocks=vector("list",length=3)
+tbs=seq(14950,650,-100)
+tblocks[[1]] = tblocks[[2]] = tblocks[[3]] = matrix(NA,nrow=144,ncol=nsim)
+
+for (x in 1:3)
+{
+  for (s in 1:1000)
+  {
+    tblocks[[x]][,s]=as.numeric(rev(table(cut(posteriors[[x]][,s],breaks=seq(15000,600,-100)))))
+  }
+}
+
+
+# Comparison Analysis with Crema 2012
+pithouseData_compare = subset(pithouseData,Prefecture!="Nagano" & !StartPhase%in%c("S0","S1.1","S1.2","S2.1","S2.2",paste0("S",3:8),paste0("B",1:6)) & !EndPhase%in%c("S0","S1.1","S1.2","S2.1","S2.2",paste0("S",3:8),paste0("B",1:6)))
+
 
 
 
