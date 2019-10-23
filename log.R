@@ -1,7 +1,7 @@
 library(magrittr)
 library(dplyr)
 library(oxcAAR)
-library(rcabon)
+library(rcarbon)
 
 source("./R/utilities.R")
 source("./R/oxcalReadjs.R")
@@ -39,17 +39,18 @@ oxcalScriptGen(id=c14data$LabCode,c14age=c14data$CRA,errors=c14data$Error,group=
 
 ## Retrieve Oxcal Output (from Oxcal Online - notice this requires about 70-90 hours of analysis) ####
 
-# Read js files (this takes some time)
-gaussian.agreement = oxcalReadjs(x=df, model='gaussian',path='../oxcal/results/')
-uniform.agreement = oxcalReadjs(x=df, model='uniform',path='../oxcal/results/')
-trapezoid.agreement = oxcalReadjs(x=df, model='trapezoid',path='../oxcal/results/')
+df = data.frame(id=as.character(c14data$LabCode),grp=c14data$CombineGroup,stringsAsFactors = FALSE)
 
-# Combine with initial data and subset only cases with agreement index above 60:
-c14data.gaussian.rerun = left_join(c14data,gaussian.agreement$df,by=x("LabCode"="id")) %>%
+# Read js files (this takes some time)
+gaussian.agreement = oxcalReadjs(x=df, model='gaussian',path='./oxcal/results/')
+uniform.agreement = oxcalReadjs(x=df, model='uniform',path='./oxcal/results/')
+trapezoid.agreement = oxcalReadjs(x=df, model='trapezoid',path='./oxcal/results/')
+
+c14data.gaussian.rerun = left_join(c14data,gaussian.agreement$df,by=c("LabCode"="id")) %>%
   subset(agreement>60|combine.agreement>60)
-c14data.uniform.rerun = left_join(c14data,uniform.agreement$df,by=x("LabCode"="id")) %>%
+c14data.uniform.rerun = left_join(c14data,uniform.agreement$df,by=c("LabCode"="id")) %>%
   subset(agreement>60|combine.agreement>60)
-c14data.trapezoid.rerun = left_join(c14data,trapezoid.agreement$df,by=x("LabCode"="id")) %>%
+c14data.trapezoid.rerun = left_join(c14data,trapezoid.agreement$df,by=c("LabCode"="id")) %>%
   subset(agreement>60|combine.agreement>60)
 
 # Resubmission to OxCal 
