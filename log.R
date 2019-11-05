@@ -1,8 +1,19 @@
-# Read Data
+library(magrittr)
+library(dplyr)
+library(oxcAAR)
+library(rcarbon)
+
+source("./R/utilities.R")
+source("./R/oxcalReadjs.R")
+source("./R/oxcalScriptCreator.R")
+source("./R/outlierAnalysis.R")
+source("./R/mcsim.R")
+
+
+## Read Data ####
 c14data = read.csv("./data/c14dates.csv")
 
-# Outlier Analysis
-source("./R/outlierAnalysis.R")
+## Outlier Analysis ####
 grps = unique(c14data$CombineGroup)
 grps = grps[which(!is.na(grps))]
 c14data$outlier=FALSE
@@ -19,26 +30,54 @@ c14data=subset(c14data,!outlier)
 save.image("./R_images/c14data.RData")
 
 
-#Create Oxcal Scripts
-source("./R/oxcalScriptCreator.R")
+## Create Oxcal Scripts ####
 
 oxcalScriptGen(id=c14data$LabCode,c14age=c14data$CRA,errors=c14data$Error,group=c14data$CombineGroup,phases=c14data$PhaseAnalysis,fn="./oxcal/oxcalscripts/gaussian.oxcal",mcname="mcmcGaussian",model="gaussian")
 oxcalScriptGen(id=c14data$LabCode,c14age=c14data$CRA,errors=c14data$Error,group=c14data$CombineGroup,phases=c14data$PhaseAnalysis,fn="./oxcal/oxcalscripts/uniform.oxcal",mcname="mcmcUniform",model="uniform")
 oxcalScriptGen(id=c14data$LabCode,c14age=c14data$CRA,errors=c14data$Error,group=c14data$CombineGroup,phases=c14data$PhaseAnalysis,fn="./oxcal/oxcalscripts/trapezoid.oxcal",mcname="mcmcTrapezoid",model="trapezoid")
 
 
-#Retrieve Oxcal Output (from Oxcal Online - notice this requires about 70-90 hours of analysis)
+## Retrieve Oxcal Output (from Oxcal Online - notice this requires about 70-90 hours of analysis) ####
+
+df = data.frame(id=as.character(c14data$LabCode),grp=c14data$CombineGroup,stringsAsFactors = FALSE)
+
+# Read js files (this takes some time)
+gaussian.agreement = oxcalReadjs(x=df, model='gaussian',path='./oxcal/results/')
+uniform.agreement = oxcalReadjs(x=df, model='uniform',path='./oxcal/results/')
+trapezoid.agreement = oxcalReadjs(x=df, model='trapezoid',path='./oxcal/results/')
+
+c14data.gaussian.rerun = left_join(c14data,gaussian.agreement$df,by=c("LabCode"="id")) %>%
+  subset(agreement>60|combine.agreement>60)
+c14data.uniform.rerun = left_join(c14data,uniform.agreement$df,by=c("LabCode"="id")) %>%
+  subset(agreement>60|combine.agreement>60)
+c14data.trapezoid.rerun = left_join(c14data,trapezoid.agreement$df,by=c("LabCode"="id")) %>%
+  subset(agreement>60|combine.agreement>60)
+
+# Resubmission to OxCal 
+
+oxcalScriptGen(id=c14data.gaussian.rerun$LabCode,c14age=c14data.gaussian.rerun$CRA,errors=c14data.gaussian.rerun$Error,group=c14data.gaussian.rerun$CombineGroup,phases=c14data.gaussian.rerun$PhaseAnalysis,fn="./oxcal/oxcalscripts/gaussianR.oxcal",mcname="mcmcGaussianR",model="gaussian")
+oxcalScriptGen(id=c14data.uniform.rerun$LabCode,c14age=c14data.uniform.rerun$CRA,errors=c14data.uniform.rerun$Error,group=c14data.uniform.rerun$CombineGroup,phases=c14data.uniform.rerun$PhaseAnalysis,fn="./oxcal/oxcalscripts/uniformR.oxcal",mcname="mcmcUniformR",model="uniform")
+oxcalScriptGen(id=c14data.trapezoid.rerun$LabCode,c14age=c14data.trapezoid.rerun$CRA,errors=c14data.trapezoid.rerun$Error,group=c14data.trapezoid.rerun$CombineGroup,phases=c14data.trapezoid.rerun$PhaseAnalysis,fn="./oxcal/oxcalscripts/trapezoidR.oxcal",mcname="mcmcTrapezoidR",model="trapezoid")
+
+# Read re-run results ####
+
+gaussian.agreement = oxcalReadjs(x=df, model='gaussianR',path='../oxcal/results/')
+uniform.agreement = oxcalReadjs(x=df, model='uniformR',path='../oxcal/results/')
+trapezoid.agreement = oxcalReadjs(x=df, model='trapezoidR',path='../oxcal/results/')
+
+# Read MCMC samples (excluding first (pass number) and last (empty) column)
+gaussian.samples = read.csv("../oxcal/oxcalOnlineResults/mcmcGaussianR.csv")[,-c(1,86)] 
+uniform.samples = read.csv("../oxcal/oxcalOnlineResults/mcmcUniformR.csv")[,-c(1,86)]
+trapezoid.samples = read.csv("../oxcal/oxcalOnlineResults/mcmcTrapezoidR.csv")[,-c(1,170)]
+
+# Convert into an Array
+phases =c("S0","S1.1","S1.2","S2.1","S2.2",paste0("S",3:8),paste0("Z",1:7),"C1","C234","C56","C78",paste0("C",9:14),paste0("K",1:8),paste0("B",1:6))
+postGaussian=convertToArray(gaussian.samples,type="gaussian",phases)
+postUniform=convertToArray(uniform.samples,type="uniform",phases)
+postTrapezoid=convertToArray(trapezoid.samples,type="trapezium",phases)
 
 
-#Exclude Low Agreement Index Dates and Create Oxcal Scripts
-
-
-
-
-
-#Prepare Pithouse Data
-source("./R/utilities.R")
-phases =c("S0","S1-1","S1-2","S2-1","S2-2",paste0("S",3:8),paste0("Z",1:7),"C1","C234","C56","C78",paste0("C",9:14),paste0("K",1:8),paste0("B",1:6))
+## Prepare Pithouse Data ####
 nagano = read.csv("./data/suzuki/nagano.csv",stringsAsFactors = FALSE)
 kanagawa = read.csv("./data/suzuki/kanagawa.csv",stringsAsFactors = FALSE)
 yamanashi = read.csv("./data/suzuki/yamanashi.csv",stringsAsFactors = FALSE)
@@ -67,12 +106,63 @@ for (i in 1:length(pthlist))
 res=lapply(res,orgTable) #orgTable converts aggregated counts into a data.frame with 1 house per row
 pithouseData=rbind.data.frame(res[[1]],res[[2]],res[[3]],res[[4]],res[[5]]) #combine to a single data.frame
 
-#Simulate Pithouse Dates
+# Simulate Pithouse Dates ####
+nsim = 1000
+simGaussian=mcsim(pithouseData,nsim=1000,posterior=postGaussian,weights="variance")
+simUniform=mcsim(pithouseData,nsim=1000,posterior=postUniform,weights="variance")
+simTrapezoid=mcsim(pithouseData,nsim=1000,posterior=postTrapezoid,weights="variance")
+
+# count for each 100-year block
+posteriors = list(gaussian=simGaussian,uniform=simUniform,trapezoid=simTrapezoid)
+tblocks=vector("list",length=3)
+tbs=seq(14950,650,-100)
+tblocks[[1]] = tblocks[[2]] = tblocks[[3]] = matrix(NA,nrow=144,ncol=nsim)
+
+for (x in 1:3)
+{
+  for (s in 1:1000)
+  {
+    tblocks[[x]][,s]=as.numeric(rev(table(cut(posteriors[[x]][,s],breaks=seq(15000,600,-100)))))
+  }
+}
+
+
+# Comparison Analysis with Crema 2012
+pithouseData_compare = subset(pithouseData,Prefecture!="Nagano" & !StartPhase%in%c("S0","S1.1","S1.2","S2.1","S2.2",paste0("S",3:8),paste0("B",1:6)) & !EndPhase%in%c("S0","S1.1","S1.2","S2.1","S2.2",paste0("S",3:8),paste0("B",1:6)))
 
 
 
-#Plot Results
 
+
+# Crema 2012 Re-analysis ####
+# There is a small discrepancies in the results between Crema 2012 and this re-analysis.
+crema2012_phases = read.csv("./data/suzuki/crema2012_phases.csv",stringsAsFactors = FALSE)
+crema2012_counts = read.csv("./data/suzuki/crema2012_counts.csv",stringsAsFactors = FALSE)
+crema2012_combined=left_join(crema2012_counts,crema2012_phases,by=c("TimeSpanStart"="Phase")) %>%
+  select(TimeSpanStart,TimeSpanEnd,Count,st=Start) %>%
+  left_join(crema2012_phases,by=c("TimeSpanEnd"="Phase")) %>%
+  select(TimeSpanStart,TimeSpanEnd,Count,st,en=End)
+  
+nsim = 1000
+sim.crema2012=replicate(n = nsim,unlist(apply(crema2012_combined,1,function(x){return(runif(n=x[1],max=x[2],min=x[3]))})))
+
+tbs.crema2012=seq(6950,3250,-100)
+tblocks.crema2012=matrix(NA,nrow=length(tbs.crema2012),ncol=nsim)
+
+for (s in 1:1000)
+{
+  tblocks.crema2012[,s]=as.numeric(rev(table(cut(sim.crema2012[,s],breaks=seq(7000,3200,-100)))))
+}
+
+
+## Plot Results ####
+
+# Crema 2012 re-analysis
+plot(tbs.crema2012,tblocks.crema2012[,1],pch=20,col="lightgrey",xlim=c(7000,3200),ylim=range(tblocks),ylab="Number of Residential Units",xlab="cal BP",type="n")
+apply(tblocks.crema2012,2,lines,x=tbs,col="lightgrey")
+lines(tbs.crema2012,apply(tblocks.crema2012,1,mean))
+points(tbs.crema2012,apply(tblocks.crema2012,1,mean),pch=20)
+axis(1,at=seq(16000,600,-100),tck=-0.01,labels=NA)
 
 
 
