@@ -21,9 +21,14 @@ westKanto = rbind.data.frame(kanagawaC14,saitamaC14,tokyoC14,naganoC14,yamanashi
 ## Use Address as Unique Identifier
 westKanto$SiteID = paste0("S",as.numeric(westKanto$所在地))
 
-####Remove Dates: 1) without CRA and Error; 2) On bones
+####Remove Dates on bones
 westKanto=westKanto[-grep("骨",as.character(westKanto$試料の種類)),] #Remove Bones (no shells)
-westKanto=subset(westKanto,!is.na(C14年代)&!is.na(C14年代.))
+
+####Some Dates are not recorded as numeric and subset only those within 17000 and 2500 CRA
+westKanto$C14年代=as.numeric(as.character(westKanto$C14年代))
+westKanto$C14年代.=as.numeric(as.character(westKanto$C14年代.))
+westKanto = subset(westKanto,!is.na(C14年代)&!is.na(C14年代.))
+westKanto = subset(westKanto,C14年代<17000&C14年代>2500)
 
 
 ####Specify Prefecture
