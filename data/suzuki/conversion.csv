@@ -34,9 +34,9 @@ PotteryPhase_Suzuki1986,PotteryPhase_Suzuki1986_En,Kobayashi 2017,Interval_Start
 諸磯c・日向I・籠畑I・下島,Moroiso c / Hinata I / Kagobatake I / Shitajima,Z6,Z6,Z6
 十三菩提・日向II・籠畑II,Jusanbodai / Hinata II /Kagobatake II,Z7,Z7,Z7
 五領ヶ台１,Goryogadai I,C1,Z1,Z1
-五領ヶ台２・阿玉台１a,Goryogadai II / Otamadai 1a,C2-C5,C234,C56
+五領ヶ台２・阿玉台１a,Goryogadai II / Otamadai 1a,"C2,C3,C4,C5",C234,C56
 貉沢,Mujinasawa,C5,C56,C56
-勝坂I・阿玉台１b,Katsusaka I / Otamadai 1b,C5-C6,C56,C56
+勝坂I・阿玉台１b,Katsusaka I / Otamadai 1b,"C5,C6",C56,C56
 新道,Aramichi,C6,C56,C56
 阿玉台２・藤内I,Otamadai 2 / Fujiuchi I,C7,C78,C78
 勝坂２・藤内,Katsusaka 2 / Fujiuchi II,C7,C78,C78
