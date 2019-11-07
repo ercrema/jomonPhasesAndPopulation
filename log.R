@@ -130,10 +130,6 @@ for (x in 1:3)
 # Comparison Analysis with Crema 2012
 pithouseData_compare = subset(pithouseData,Prefecture!="Nagano" & !StartPhase%in%c("S0","S1.1","S1.2","S2.1","S2.2",paste0("S",3:8),paste0("B",1:6)) & !EndPhase%in%c("S0","S1.1","S1.2","S2.1","S2.2",paste0("S",3:8),paste0("B",1:6)))
 
-
-
-
-
 # Crema 2012 Re-analysis ####
 # There is a small discrepancies in the results between Crema 2012 and this re-analysis.
 crema2012_phases = read.csv("./data/suzuki/crema2012_phases.csv",stringsAsFactors = FALSE)
@@ -154,6 +150,14 @@ for (s in 1:1000)
   tblocks.crema2012[,s]=as.numeric(rev(table(cut(sim.crema2012[,s],breaks=seq(7000,3200,-100)))))
 }
 
+
+# SPD Analysis
+load("./R_images/westKantoC14.RData")
+westKantoCal = calibrate(westKantoC14$CRA,westKantoC14$Error,normalise=FALSE)
+westKantoBin = binPrep(westKantoC14$SiteID,westKantoC14$CRA,h=200)
+westKantoSPD = spd(westKantoCal,timeRange=c(7000,3200))
+westKantoSPD2 = spd2rc(westKantoSPD,breaks=seq(7000,3200,-100))
+plot(seq(6950,3250,-100),westKantoSPD2$sumblock,type="h",xlim=c(7000,3200))
 
 ## Plot Results ####
 
