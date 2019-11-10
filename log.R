@@ -1,19 +1,27 @@
+# Load R packages ####
 library(magrittr)
 library(dplyr)
 library(oxcAAR)
 library(rcarbon)
+library(TTR)
+library(trapezoid)
+library(magrittr)
+library(readr)
 
+# Source R functions ####
 source("./R/utilities.R")
 source("./R/oxcalReadjs.R")
 source("./R/oxcalScriptCreator.R")
 source("./R/outlierAnalysis.R")
 source("./R/mcsim.R")
 
+# General Settings ####
+nsim = 5000
 
-## Read Data ####
+## Read and Prepare Data for Ceramic Phase Models####
 c14data = read.csv("./data/c14dates.csv")
 
-## Outlier Analysis ####
+## Outlier Analysis ###
 grps = unique(c14data$CombineGroup)
 grps = grps[which(!is.na(grps))]
 c14data$outlier=FALSE
@@ -27,16 +35,12 @@ for (i in 1:length(grps))
 }
 #remove outliers
 c14data=subset(c14data,!outlier)
+#create R image file
 save(c14data,file="./R_images/c14data.RData")
 
-
-
-
-
-## Generate Summary Table 
+## Generate Summary Table ###
 phases =c("S0","S1.1","S1.2","S2.1","S2.2",paste0("S",3:8),paste0("Z",1:7),"C1","C234","C56","C78",paste0("C",9:14),paste0("K",1:8),paste0("B",1:6))
 kobayashiPhases = c("S0","S1-1","S1-2","S2-1","S2-2","S3-1;S3-2","S4","S5","S6","S7","S8","Z1","Z2","Z3","Z4","Z5","Z6","Z7","C1","C2;C3;C4","C5;C6","C7;C8","C9a;C9bc","C10a;C10b;C10c","C11ab;C11c","C12a;C12b;C12c","C13a;C13b","C14a;C14b","K1-1;K1-2;K1-3","K2","K3","K4","K5","K6","K7","K8-1;K8-2","B1","B2","B3","B4","B5","B6")
-
 
 table1 = data.frame(phases,kobayashi2017=kobayashiPhases,samples=NA,effsamples=NA,nsites=NA,correspondingphases=NA,correspondingphasesEn=NA)
 conversion = read.csv("./data/suzuki/conversion.csv",stringsAsFactors = FALSE)
@@ -53,28 +57,30 @@ for (i in 1:length(phases))
   table1$correspondingphasesEn[i]=paste(conversion$PotteryPhase_Suzuki1986_En[k],collapse=";")
 }
 
+# store base table (to be manually edited)
 write.csv(table1,file="./manuscript/tables/table1_base.csv")
 
 
 
 
 
-## Create Oxcal Scripts ####
-
-oxcalScriptGen(id=c14data$LabCode,c14age=c14data$CRA,errors=c14data$Error,group=c14data$CombineGroup,phases=c14data$PhaseAnalysis,fn="./oxcal/oxcalscripts/gaussian.oxcal",mcname="mcmcGaussian",model="gaussian")
-oxcalScriptGen(id=c14data$LabCode,c14age=c14data$CRA,errors=c14data$Error,group=c14data$CombineGroup,phases=c14data$PhaseAnalysis,fn="./oxcal/oxcalscripts/uniform.oxcal",mcname="mcmcUniform",model="uniform")
-oxcalScriptGen(id=c14data$LabCode,c14age=c14data$CRA,errors=c14data$Error,group=c14data$CombineGroup,phases=c14data$PhaseAnalysis,fn="./oxcal/oxcalscripts/trapezoid.oxcal",mcname="mcmcTrapezoid",model="trapezoid")
 
 
-## Retrieve Oxcal Output (from Oxcal Online - notice this requires about 70-90 hours of analysis) ####
+## Ceramic Phase Modelling (via OxCal) ####
 
+## Generate OxCal Script ##
+oxcalScriptGen(id=c14data$LabCode,c14age=c14data$CRA,errors=c14data$Error,group=c14data$CombineGroup,phases=c14data$PhaseAnalysis,fn="./oxcal/oxcalscripts/gaussian.oxcal",mcname="mcmcGaussian",model="gaussian",mcnsim=nsim)
+oxcalScriptGen(id=c14data$LabCode,c14age=c14data$CRA,errors=c14data$Error,group=c14data$CombineGroup,phases=c14data$PhaseAnalysis,fn="./oxcal/oxcalscripts/uniform.oxcal",mcname="mcmcUniform",model="uniform",mcnsim=nsim)
+oxcalScriptGen(id=c14data$LabCode,c14age=c14data$CRA,errors=c14data$Error,group=c14data$CombineGroup,phases=c14data$PhaseAnalysis,fn="./oxcal/oxcalscripts/trapezoid.oxcal",mcname="mcmcTrapezoid",model="trapezoid",mcnsim=nsim)
+
+## Retrieve Oxcal Output (from Oxcal Online - notice this requires about 70-90 hours of analysis) ##
 df = data.frame(id=as.character(c14data$LabCode),grp=c14data$CombineGroup,stringsAsFactors = FALSE)
-
-# Read js files (this takes some time)
+# Read js files (this takes some time) 
 gaussian.agreement = oxcalReadjs(x=df, model='gaussian',path='./oxcal/results/')
 uniform.agreement = oxcalReadjs(x=df, model='uniform',path='./oxcal/results/')
 trapezoid.agreement = oxcalReadjs(x=df, model='trapezoid',path='./oxcal/results/')
 
+## Generate subsets of dates with agreement indices above 60 ##
 c14data.gaussian.rerun = left_join(c14data,gaussian.agreement$df,by=c("LabCode"="id")) %>%
   subset(agreement>60|combine.agreement>60)
 c14data.uniform.rerun = left_join(c14data,uniform.agreement$df,by=c("LabCode"="id")) %>%
@@ -82,14 +88,12 @@ c14data.uniform.rerun = left_join(c14data,uniform.agreement$df,by=c("LabCode"="i
 c14data.trapezoid.rerun = left_join(c14data,trapezoid.agreement$df,by=c("LabCode"="id")) %>%
   subset(agreement>60|combine.agreement>60)
 
-# Resubmission to OxCal 
+## Regenerate OxCal Scripts ##
+oxcalScriptGen(id=c14data.gaussian.rerun$LabCode,c14age=c14data.gaussian.rerun$CRA,errors=c14data.gaussian.rerun$Error,group=c14data.gaussian.rerun$CombineGroup,phases=c14data.gaussian.rerun$PhaseAnalysis,fn="./oxcal/oxcalscripts/gaussianR.oxcal",mcname="mcmcGaussianR",model="gaussian",mcnsim=nsim)
+oxcalScriptGen(id=c14data.uniform.rerun$LabCode,c14age=c14data.uniform.rerun$CRA,errors=c14data.uniform.rerun$Error,group=c14data.uniform.rerun$CombineGroup,phases=c14data.uniform.rerun$PhaseAnalysis,fn="./oxcal/oxcalscripts/uniformR.oxcal",mcname="mcmcUniformR",model="uniform",mcnsim=nsim)
+oxcalScriptGen(id=c14data.trapezoid.rerun$LabCode,c14age=c14data.trapezoid.rerun$CRA,errors=c14data.trapezoid.rerun$Error,group=c14data.trapezoid.rerun$CombineGroup,phases=c14data.trapezoid.rerun$PhaseAnalysis,fn="./oxcal/oxcalscripts/trapezoidR.oxcal",mcname="mcmcTrapezoidR",model="trapezoid",mcnsim=nsim)
 
-oxcalScriptGen(id=c14data.gaussian.rerun$LabCode,c14age=c14data.gaussian.rerun$CRA,errors=c14data.gaussian.rerun$Error,group=c14data.gaussian.rerun$CombineGroup,phases=c14data.gaussian.rerun$PhaseAnalysis,fn="./oxcal/oxcalscripts/gaussianR.oxcal",mcname="mcmcGaussianR",model="gaussian")
-oxcalScriptGen(id=c14data.uniform.rerun$LabCode,c14age=c14data.uniform.rerun$CRA,errors=c14data.uniform.rerun$Error,group=c14data.uniform.rerun$CombineGroup,phases=c14data.uniform.rerun$PhaseAnalysis,fn="./oxcal/oxcalscripts/uniformR.oxcal",mcname="mcmcUniformR",model="uniform")
-oxcalScriptGen(id=c14data.trapezoid.rerun$LabCode,c14age=c14data.trapezoid.rerun$CRA,errors=c14data.trapezoid.rerun$Error,group=c14data.trapezoid.rerun$CombineGroup,phases=c14data.trapezoid.rerun$PhaseAnalysis,fn="./oxcal/oxcalscripts/trapezoidR.oxcal",mcname="mcmcTrapezoidR",model="trapezoid")
-
-## Read re-run results ####
-
+## Retrieve Oxcal Output (from Oxcal Online - notice this requires about 70-90 hours of analysis) ##
 df.gaussian.rerun = data.frame(id=as.character(c14data.gaussian.rerun$LabCode),grp=c14data.gaussian.rerun$CombineGroup,stringsAsFactors = FALSE)
 df.uniform.rerun = data.frame(id=as.character(c14data.uniform.rerun$LabCode),grp=c14data.uniform.rerun$CombineGroup,stringsAsFactors = FALSE)
 df.trapezoid.rerun = data.frame(id=as.character(c14data.trapezoid.rerun$LabCode),grp=c14data.trapezoid.rerun$CombineGroup,stringsAsFactors = FALSE)
@@ -109,9 +113,13 @@ postGaussian=convertToArray(gaussian.samples,type="gaussian",phases)
 postUniform=convertToArray(uniform.samples,type="uniform",phases)
 postTrapezoid=convertToArray(trapezoid.samples,type="trapezium",phases)
 
+# Save output in an R image file
 save(postTrapezoid,postUniform,postGaussian,file="./R_images/posteriorSamples.RData")
 
+
 ## Prepare Pithouse Data ####
+
+## Read Suzuki's dataset
 nagano = read.csv("./data/suzuki/nagano.csv",stringsAsFactors = FALSE)
 kanagawa = read.csv("./data/suzuki/kanagawa.csv",stringsAsFactors = FALSE)
 yamanashi = read.csv("./data/suzuki/yamanashi.csv",stringsAsFactors = FALSE)
@@ -140,15 +148,17 @@ for (i in 1:length(pthlist))
 res=lapply(res,orgTable) #orgTable converts aggregated counts into a data.frame with 1 house per row
 pithouseData=rbind.data.frame(res[[1]],res[[2]],res[[3]],res[[4]],res[[5]]) #combine to a single data.frame
 
+# save data into an R image
 save(pithouseData,file="./R_images/pithouseData.RData")
 
 
-## Simulate Pithouse Dates ####
-nsim = 5000
-simGaussian=mcsim(pithouseData[,-3],nsim=5000,posterior=postGaussian,weights="variance")
-simUniform=mcsim(pithouseData[,-3],nsim=5000,posterior=postUniform,weights="variance")
-simTrapezoid=mcsim(pithouseData[,-3],nsim=5000,posterior=postTrapezoid,weights="variance")
 
+## Simulate Pithouse Dates ####
+simGaussian=mcsim(pithouseData[,-3],nsim=nsim,posterior=postGaussian,weights="variance")
+simUniform=mcsim(pithouseData[,-3],nsim=nsim,posterior=postUniform,weights="variance")
+simTrapezoid=mcsim(pithouseData[,-3],nsim=nsim,posterior=postTrapezoid,weights="variance")
+
+## Group dates in 100-yrs bins between 8000 and 2500 cal BP
 tbs = seq(7950,2550,-100)
 tbs2 = seq(8000,2500,-100)
 tblocks.gauss = tblocks.unif = tblocks.trap =matrix(NA,nrow=length(tbs),ncol=nsim)
@@ -173,42 +183,38 @@ save(tbs,tbs2,simTrapezoid,simUniform,simGaussian,tblocks.trap,tblocks.gauss,tbl
 
 
 
-## SPD Analysis ####
-nsim = 5000
-tbs = seq(7950,2550,-100)
 
-load("./R_images/westKantoC14.RData")
-westKantoCal = calibrate(westKantoC14$CRA,westKantoC14$Error,normalise=FALSE)
-westKantoBin = binPrep(westKantoC14$SiteID,westKantoC14$CRA,h=200)
-westKantoSPD = spd(westKantoCal,timeRange=c(8000,2500))
-westKantoSPD_blocks = spd2rc(westKantoSPD,breaks=seq(8000,2500,-100))
-westKantoSPD_sampled = sampleDates(x = westKantoCal,bins = westKantoBin,nsim = 1000)
+## SPD Analysis ####
+tbs = seq(7950,2550,-100)
+tbs2 = seq(8000,2500,-100)
+
+#Load C14 data image (generate by running the script in bindC14csv.R)
+load("./R_images/westKantoNaganoC14.RData")
+westKantoNaganoCal = calibrate(westKantoNaganoC14$CRA,westKantoNaganoC14$Error,normalise=FALSE) #calibrate
+westKantoNaganoBin = binPrep(westKantoNaganoC14$SiteID,westKantoNaganoC14$CRA,h=200) #bin (200 years)
+westKantoNaganoSPD = spd(westKantoNaganoCal,timeRange=c(8000,2500)) #generate SPD
+westKantoNaganoSPD_blocks = spd2rc(westKantoNaganoSPD,breaks=seq(8000,2500,-100)) #aggregate by 100yrs blocks
+westKantoNaganoSPD_sampled = sampleDates(x = westKantoNaganoCal,bins = westKantoNaganoBin,nsim = 1000) #sample random dates
 
 tblocksCal =matrix(NA,nrow=length(tbs),ncol=nsim)
 
 for (s in 1:nsim)
 {
-  tblocksCal[,s]=as.numeric(rev(table(cut(t(westKantoSPD_sampled$sdates)[,s],breaks=tbs2))))
+  tblocksCal[,s]=as.numeric(rev(table(cut(t(westKantoNaganoSPD_sampled$sdates)[,s],breaks=tbs2))))
 }
 
-save(westKantoCal,westKantoBin,westKantoSPD,westKantoSPD_blocks,westKantoSPD_sampled,tblocksCal,file="./R_images/spdRes.RData")
-
-
-# Rolling Correlation Analysis
-
-
-
-
-
-
-
+#save image file
+save(westKantoNaganoCal,westKantoNaganoBin,westKantoNaganoSPD,westKantoNaganoSPD_blocks,westKantoNaganoSPD_sampled,tblocksCal,file="./R_images/spdRes.RData")
 
 ## Correlation Analysis ####
+
+## compute rolling correlation over 10 blocks (1,000 years)
 tblockRoll10.trap = rollCor(tblocks.trap,tblocksCal,rollsize = 10) 
 tblockRoll10.gauss = rollCor(tblocks.gauss,tblocksCal,rollsize = 10) 
 tblockRoll10.unif = rollCor(tblocks.unif,tblocksCal,rollsize = 10) 
 overallCorr.trap = overallCorr.unif = overallCorr.gauss = numeric(length=nsim)
 
+## compute overall correlation
 for (s in 1:nsim)
 {
   overallCorr.trap[s] = cor(tblocks.trap[,s],tblocksCal[,s])
@@ -219,4 +225,5 @@ for (s in 1:nsim)
 #mean(overallCorr.trap)
 #quantile(overallCorr.trap,c(0.025,0.975))
 
+## Save output in R image file
 save(tblockRoll10.trap,tblockRoll10.gauss,tblockRoll10.unif,overallCorr.trap,overallCorr.gauss,overallCorr.unif,file="./R_images/corr.RData")
