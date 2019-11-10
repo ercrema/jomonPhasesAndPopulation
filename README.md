@@ -1,74 +1,83 @@
-# jomonPhasesAndPopulation
-This repository contains the C14 Dates, R scripts, and LaTeX source code associated with the manuscript "Combining Bayesian Chronological Models with the Aoristic/Monte-Carlo approach: a case study using a revised Chronology of Jomon Pottery Phases in Japan" by Crema, E.R., and Kobayashi, K.
+# Bayesian Approaches to Jomon Chronology and Demography: source code, data, and scripts
+This repository contains the C14 Dates, R code and OxCal scripts associated with the manuscript "Bayesian Approaches to Jomon Chronology and Demography" by Crema, E.R., and Kobayashi, K.
 
 # File Structure
 
 ```
-│   README.md ... this document
-│   esm.Rmd ... supplementary material with technical details and workflow.
-│
-|
-└───manuscript
-│   │   manuscript.tex ... submitted manuscript
-│   │   bibfile.bib ... bibTeX file
-|   |   model2-names.bst ... LaTeX style file for elsevier
-|   |   
-│   │
-│   └───figures
-│       │   limitation_aoristic_mc.pdf
-│       │   posterior_jomon_phases.pdf
-│       │   pithousecounts_and_roc.pdf
-|       |   comparison_crema_imamura.pdf
-|       |   figureScript.R ... R script for generating figures
-│   
-└───data
-|   │   c14dates.csv ... C14 dates used for the Bayesian Chronological Models
-|   │   kobayashi2008.csv ... Start and End date of Jomon Phases used in Crema 2012
-|   |   imamura1996.csv ... Pithouse counts extracted from Imamura 1996 published graph.
-|   |   
-|   |
-|   └───suzuki1986 ... pithouse counts with time-span of existence
-|        |   nagano.csv 
-|        |   saitama.csv
-|        |   tokyo.csv  
-|        |   yamanashi.csv
-|        |   kanagawa.csv   
-|        |   conversion.csv
-|
-|
-└───R
-|   |   oxcalScriptGenerator.R ... R script for generating oxcal Scripts
-|   |   oxcalOutputReader.R ... Functions for reading oxcal .js files
-|   |   doubleMonteCarlo.R ... R script for generating random dates of pithouse constructions
-|   |   utilities.R ... several utitlity functions.
-|
-|
-└───oxcal
-|   |   oxcalOutput.RData ... Aggregated R image file of oxcal output
-|   | 
-|   |
-|   └───submissionScripts ... oxcal submission scripts
-|   |    |   gaussian.oxcal
-|   |    |   uniform.oxcal
-|   |    |   trapezoid.oxcal
-|   | 
-|   |
-|   └───output ... output data from OxCal
-|        |   mcmcGaussian.csv
-|        |   mcmcUniform.csv  
-|        |   mcmcTrapezoid.csv  
-|        |   gaussian.js
-|        |   uniform.js  
-|        |   trapezoid.js 
-|        |   gaussian.txt
-|        |   uniform.txt  
-|        |   trapezoid.txt  
-|        |   gaussian.log
-|        |   uniform.log  
-|        |   trapezoid.log  
+./
+├── data #Data Folder
+│   ├── c14dates.csv #Radiocarbon dates for OxCal Model
+│   ├── rekihaku14C #Radiocarbon dates for SPD analysis
+│   │   ├── bindC14csv.R #Binder function for downloaded radiocarbon dates
+│   │   ├── kanagawa_T_B_5_11_2019.csv #Radiocarbon dates from Kanagawa
+│   │   ├── nagano_T_B_5_11_2019.csv #Radiocarbon dates from Nagano
+│   │   ├── saitama_T_B_5_11_2019.csv #Radiocarbon dates from Saitama
+│   │   ├── tokyo_T_B_5_11_2019.csv #Radiocarbon dates from Tokyo
+│   │   └── yamanashi_T_B_5_11_2019.csv #Radiocarbon dates from Yamanashi
+│   └── suzuki #Suzuki's Pithouse dataset
+│       ├── conversion.csv #Baseline crossreference of ceramic phases 
+│       ├── kanagawa.csv #Pithouse counts for Kanagwa
+│       ├── nagano.csv #Pithouse counts for Nagano
+│       ├── saitama.csv #Pithouse counts for Saitama
+│       ├── tokyo.csv #Pithouse counts for Tokyo
+│       └── yamanashi.csv #Pithouse counts for Yamanashi
+├── log.R #Core Log file
+├── manuscript #Manuscript Related Files
+│   ├── figures
+│   │   ├── figure1.pdf
+│   │   ├── figure2.pdf
+│   │   └── figurelog.R #R function for generating figures
+│   └── tables 
+│       └── table1_base.csv
+├── oxcal
+│   ├── oxcalscripts #OxCal submission scripts. *R.oxcal are resubmissions.
+│   │   ├── gaussian.oxcal
+│   │   ├── gaussianR.oxcal
+│   │   ├── trapezoid.oxcal
+│   │   ├── trapezoidR.oxcal
+│   │   ├── uniform.oxcal
+│   │   └── uniformR.oxcal
+│   └── results #OxCal Output Files. mcmc*.csv are posterior samples.
+│       ├── gaussian.js
+│       ├── gaussian.log
+│       ├── gaussian.oxcal
+│       ├── gaussianR.js
+│       ├── gaussianR.log
+│       ├── gaussianR.oxcal
+│       ├── gaussianR.txt
+│       ├── gaussian.txt
+│       ├── mcmcGaussian.csv
+│       ├── mcmcGaussianR.csv
+│       ├── mcmcTrapezoid.csv
+│       ├── mcmcTrapezoidR.csv
+│       ├── mcmcUniform.csv
+│       ├── trapezoid.js
+│       ├── trapezoid.log
+│       ├── trapezoid.oxcal
+│       ├── trapezoidR.js
+│       ├── trapezoidR.log
+│       ├── trapezoidR.oxcal
+│       ├── trapezoidR.txt
+│       ├── trapezoid.txt
+│       ├── uniform.js
+│       ├── uniform.log
+│       ├── uniform.oxcal
+│       └── uniform.txt
+├── R #R scripts
+│   ├── mcsim.R #Monte Carlo simulation routine
+│   ├── outlierAnalysis.R #Functions for outlier analysis
+│   ├── oxcalReadjs.R #Functions for reading oxcal *.js files
+│   ├── oxcalScriptCreator.R #Functions for generating oxcal submission scripts
+│   └── utilities.R #Variety of utility functions
+├── README.md # This file
+├── R_images #R image files
+    ├── c14data.RData #C14 data for oxcal analysis
+    ├── pithouseData.RData #Re-structured pithouse data
+    ├── posteriorSamples.RData #Posterior samples from OxCal model
+    ├── simdatesPithouses.RData #Simulated dates for Suzuki's pithouses
+    ├── spdRes.RData #SPD analysis
+    └── westKantoNaganoC14.RData #C14 data for SPD analysis
 ```
-
-
 
 # R Package Used
 
@@ -78,6 +87,6 @@ This repository contains the C14 Dates, R scripts, and LaTeX source code associa
 * dplyr_0.8.3
 * readr_1.3.1
 * magrittr_1.5
+* TTR_0.23-5
+* trapezoid_2.0-0
 
-
-#
