@@ -47,11 +47,11 @@ mcsim = function(df,nsim,posterior,weights=c("equal","variance"))
   #If single phase just a random draw from the probability distribution
       if(permUnique[p,1]==permUnique[p,2])
       {
-        sampled.phases[permIndex[[p]]]=permUnique[p,1]
+        sampled.phases[permIndex[[p]]]=as.character(permUnique[p,1])
       }
       if (permUnique[p,1]!=permUnique[p,2])
       {
-        timespan = which(phases==permUnique[p,1]):which(phases==permUnique[p,2])
+        timespan = which(as.character(phases)==as.character(permUnique[p,1])):which(as.character(phases)==as.character(permUnique[p,2]))
         timespan.weights = v[timespan]
         nsamples = length(permIndex[[p]])
         sampled.phases[permIndex[[p]]] = as.character(phases[sample(timespan,nsamples,prob=timespan.weights/(sum(timespan.weights)),replace=TRUE)])
