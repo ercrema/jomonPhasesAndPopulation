@@ -27,7 +27,11 @@ for (i in 1:length(grps))
 }
 #remove outliers
 c14data=subset(c14data,!outlier)
-save.image("./R_images/c14data.RData")
+save(c14data,file="./R_images/c14data.RData")
+
+
+
+
 
 ## Generate Summary Table 
 phases =c("S0","S1.1","S1.2","S2.1","S2.2",paste0("S",3:8),paste0("Z",1:7),"C1","C234","C56","C78",paste0("C",9:14),paste0("K",1:8),paste0("B",1:6))
@@ -84,16 +88,20 @@ oxcalScriptGen(id=c14data.gaussian.rerun$LabCode,c14age=c14data.gaussian.rerun$C
 oxcalScriptGen(id=c14data.uniform.rerun$LabCode,c14age=c14data.uniform.rerun$CRA,errors=c14data.uniform.rerun$Error,group=c14data.uniform.rerun$CombineGroup,phases=c14data.uniform.rerun$PhaseAnalysis,fn="./oxcal/oxcalscripts/uniformR.oxcal",mcname="mcmcUniformR",model="uniform")
 oxcalScriptGen(id=c14data.trapezoid.rerun$LabCode,c14age=c14data.trapezoid.rerun$CRA,errors=c14data.trapezoid.rerun$Error,group=c14data.trapezoid.rerun$CombineGroup,phases=c14data.trapezoid.rerun$PhaseAnalysis,fn="./oxcal/oxcalscripts/trapezoidR.oxcal",mcname="mcmcTrapezoidR",model="trapezoid")
 
-# Read re-run results ####
+## Read re-run results ####
 
-gaussian.agreement = oxcalReadjs(x=df, model='gaussianR',path='../oxcal/results/')
-uniform.agreement = oxcalReadjs(x=df, model='uniformR',path='../oxcal/results/')
-trapezoid.agreement = oxcalReadjs(x=df, model='trapezoidR',path='../oxcal/results/')
+df.gaussian.rerun = data.frame(id=as.character(c14data.gaussian.rerun$LabCode),grp=c14data.gaussian.rerun$CombineGroup,stringsAsFactors = FALSE)
+df.uniform.rerun = data.frame(id=as.character(c14data.uniform.rerun$LabCode),grp=c14data.uniform.rerun$CombineGroup,stringsAsFactors = FALSE)
+df.trapezoid.rerun = data.frame(id=as.character(c14data.trapezoid.rerun$LabCode),grp=c14data.trapezoid.rerun$CombineGroup,stringsAsFactors = FALSE)
+
+gaussian.agreement = oxcalReadjs(x=df.gaussian.rerun, model='gaussianR',path='./oxcal/results/')
+uniform.agreement = oxcalReadjs(x=df.uniform.rerun, model='uniformR',path='./oxcal/results/')
+trapezoid.agreement = oxcalReadjs(x=df.trapezoid.rerun, model='trapezoidR',path='./oxcal/results/')
 
 # Read MCMC samples (excluding first (pass number) and last (empty) column)
-gaussian.samples = read.csv("../oxcal/oxcalOnlineResults/mcmcGaussianR.csv")[,-c(1,86)] 
-uniform.samples = read.csv("../oxcal/oxcalOnlineResults/mcmcUniformR.csv")[,-c(1,86)]
-trapezoid.samples = read.csv("../oxcal/oxcalOnlineResults/mcmcTrapezoidR.csv")[,-c(1,170)]
+gaussian.samples = read.csv("./oxcal/results/mcmcGaussianR.csv")[,-c(1,86)] 
+uniform.samples = read.csv("./oxcal/results/mcmcUniformR.csv")[,-c(1,86)]
+trapezoid.samples = read.csv("./oxcal/results/mcmcTrapezoidR.csv")[,-c(1,170)]
 
 # Convert into an Array
 phases =c("S0","S1.1","S1.2","S2.1","S2.2",paste0("S",3:8),paste0("Z",1:7),"C1","C234","C56","C78",paste0("C",9:14),paste0("K",1:8),paste0("B",1:6))
@@ -101,6 +109,7 @@ postGaussian=convertToArray(gaussian.samples,type="gaussian",phases)
 postUniform=convertToArray(uniform.samples,type="uniform",phases)
 postTrapezoid=convertToArray(trapezoid.samples,type="trapezium",phases)
 
+save(postTrapezoid,postUniform,postGaussian,file="./R_images/posteriorSamples.RData")
 
 ## Prepare Pithouse Data ####
 nagano = read.csv("./data/suzuki/nagano.csv",stringsAsFactors = FALSE)
@@ -131,58 +140,46 @@ for (i in 1:length(pthlist))
 res=lapply(res,orgTable) #orgTable converts aggregated counts into a data.frame with 1 house per row
 pithouseData=rbind.data.frame(res[[1]],res[[2]],res[[3]],res[[4]],res[[5]]) #combine to a single data.frame
 
+save(pithouseData,file="./R_images/pithouseData.RData")
+
+
 # Simulate Pithouse Dates ####
 nsim = 1000
-simGaussian=mcsim(pithouseData,nsim=1000,posterior=postGaussian,weights="variance")
-simUniform=mcsim(pithouseData,nsim=1000,posterior=postUniform,weights="variance")
-simTrapezoid=mcsim(pithouseData,nsim=1000,posterior=postTrapezoid,weights="variance")
+simGaussian=mcsim(pithouseData[,-3],nsim=1000,posterior=postGaussian,weights="variance")
+simUniform=mcsim(pithouseData[,-3],nsim=1000,posterior=postUniform,weights="variance")
+simTrapezoid=mcsim(pithouseData[,-3],nsim=1000,posterior=postTrapezoid,weights="variance")
 
-# count for each 100-year block
-posteriors = list(gaussian=simGaussian,uniform=simUniform,trapezoid=simTrapezoid)
-tblocks=vector("list",length=3)
-tbs=seq(14950,650,-100)
-tblocks[[1]] = tblocks[[2]] = tblocks[[3]] = matrix(NA,nrow=144,ncol=nsim)
-
-for (x in 1:3)
-{
-  for (s in 1:1000)
-  {
-    tblocks[[x]][,s]=as.numeric(rev(table(cut(posteriors[[x]][,s],breaks=seq(15000,600,-100)))))
-  }
-}
+save(simTrapezoid,simUniform,simGaussian,file="./R_images/simdatesPithouses.RData")
 
 
-# Comparison Analysis with Crema 2012
-pithouseData_compare = subset(pithouseData,Prefecture!="Nagano" & !StartPhase%in%c("S0","S1.1","S1.2","S2.1","S2.2",paste0("S",3:8),paste0("B",1:6)) & !EndPhase%in%c("S0","S1.1","S1.2","S2.1","S2.2",paste0("S",3:8),paste0("B",1:6)))
 
-# Crema 2012 Re-analysis ####
-# There is a small discrepancies in the results between Crema 2012 and this re-analysis.
-crema2012_phases = read.csv("./data/suzuki/crema2012_phases.csv",stringsAsFactors = FALSE)
-crema2012_counts = read.csv("./data/suzuki/crema2012_counts.csv",stringsAsFactors = FALSE)
-crema2012_combined=left_join(crema2012_counts,crema2012_phases,by=c("TimeSpanStart"="Phase")) %>%
-  select(TimeSpanStart,TimeSpanEnd,Count,st=Start) %>%
-  left_join(crema2012_phases,by=c("TimeSpanEnd"="Phase")) %>%
-  select(TimeSpanStart,TimeSpanEnd,Count,st,en=End)
-  
-nsim = 1000
-sim.crema2012=replicate(n = nsim,unlist(apply(crema2012_combined,1,function(x){return(runif(n=x[1],max=x[2],min=x[3]))})))
 
-tbs.crema2012=seq(6950,3250,-100)
-tblocks.crema2012=matrix(NA,nrow=length(tbs.crema2012),ncol=nsim)
 
-for (s in 1:1000)
-{
-  tblocks.crema2012[,s]=as.numeric(rev(table(cut(sim.crema2012[,s],breaks=seq(7000,3200,-100)))))
-}
+
+
+
+
+
 
 
 # SPD Analysis
 load("./R_images/westKantoC14.RData")
 westKantoCal = calibrate(westKantoC14$CRA,westKantoC14$Error,normalise=FALSE)
 westKantoBin = binPrep(westKantoC14$SiteID,westKantoC14$CRA,h=200)
-westKantoSPD = spd(westKantoCal,timeRange=c(7000,3200))
-westKantoSPD2 = spd2rc(westKantoSPD,breaks=seq(7000,3200,-100))
-plot(seq(6950,3250,-100),westKantoSPD2$sumblock,type="h",xlim=c(7000,3200))
+westKantoSPD = spd(westKantoCal,timeRange=c(8000,2500))
+westKantoSPD_blocks = spd2rc(westKantoSPD,breaks=seq(8000,2500,-100))
+westKantoSPD_sampled = sampleDates(x = westKantoCal,bins = westKantoBin,nsim = 1000)
+
+
+save(westKantoCal,westKantoBin,westKantoSPD,westKantoSPD_blocks,westKantoSPD_sampled,file="./R_images/spdRes.RData")
+
+
+# Rolling Correlation Analysis
+
+
+
+################### FIGURES ##########################
+
 
 ## Plot Results ####
 
