@@ -75,7 +75,7 @@ mtext(2,line=3,text = 'Number of Pit-dwellings',cex=0.7)
 legend("topleft",legend="a",bty = 'n',cex=2)
 
 par(mar=c(5,4,2,1)+0.1)
-b2=barplot(westKantoSPD2$sumblock,border=NA,col="royalblue",space = 0)
+b2=barplot(westKantoNaganoSPD2$sumblock,border=NA,col="royalblue",space = 0)
 abline(v=which(tbs2%in%seq(8000,2500,-500))-1,col="white",lty=3)
 axis(side=1,at=which(tbs2%in%seq(8000,2500,-1000))-1,labels=seq(8000,2500,-1000),tck=-0.03,padj=-0.6)
 axis(side=1,at=which(tbs2%in%seq(8000,2500,-500))-1,labels=NA,tck=-0.02)
@@ -100,3 +100,7 @@ legend("topleft",legend="c",bty = 'n',cex=2)
 dev.off()
 
 
+
+### Supplementary Figure 1 ####
+### Supplementary Figure 2 ####
+### Supplementary Figure 3 ####
