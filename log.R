@@ -143,13 +143,24 @@ pithouseData=rbind.data.frame(res[[1]],res[[2]],res[[3]],res[[4]],res[[5]]) #com
 save(pithouseData,file="./R_images/pithouseData.RData")
 
 
-# Simulate Pithouse Dates ####
-nsim = 1000
-simGaussian=mcsim(pithouseData[,-3],nsim=1000,posterior=postGaussian,weights="variance")
-simUniform=mcsim(pithouseData[,-3],nsim=1000,posterior=postUniform,weights="variance")
-simTrapezoid=mcsim(pithouseData[,-3],nsim=1000,posterior=postTrapezoid,weights="variance")
+## Simulate Pithouse Dates ####
+nsim = 5000
+simGaussian=mcsim(pithouseData[,-3],nsim=5000,posterior=postGaussian,weights="variance")
+simUniform=mcsim(pithouseData[,-3],nsim=5000,posterior=postUniform,weights="variance")
+simTrapezoid=mcsim(pithouseData[,-3],nsim=5000,posterior=postTrapezoid,weights="variance")
 
-save(simTrapezoid,simUniform,simGaussian,file="./R_images/simdatesPithouses.RData")
+tbs = seq(7950,2550,-100)
+tbs2 = seq(8000,2500,-100)
+tblocks.gauss = tblocks.unif = tblocks.trap =matrix(NA,nrow=length(tbs),ncol=nsim)
+
+for (s in 1:nsim)
+{
+  tblocks.trap[,s]=as.numeric(rev(table(cut(simTrapezoid[,s],breaks=tbs2))))
+  tblocks.gauss[,s]=as.numeric(rev(table(cut(simGaussian[,s],breaks=tbs2))))
+  tblocks.unif[,s]=as.numeric(rev(table(cut(simUniform[,s],breaks=tbs2))))
+}
+
+save(tbs,tbs2,simTrapezoid,simUniform,simGaussian,tblocks.trap,tblocks.gauss,tblocks.unif,file="./R_images/simdatesPithouses.RData")
 
 
 
@@ -162,7 +173,10 @@ save(simTrapezoid,simUniform,simGaussian,file="./R_images/simdatesPithouses.RDat
 
 
 
-# SPD Analysis
+## SPD Analysis ####
+nsim = 5000
+tbs = seq(7950,2550,-100)
+
 load("./R_images/westKantoC14.RData")
 westKantoCal = calibrate(westKantoC14$CRA,westKantoC14$Error,normalise=FALSE)
 westKantoBin = binPrep(westKantoC14$SiteID,westKantoC14$CRA,h=200)
@@ -170,26 +184,39 @@ westKantoSPD = spd(westKantoCal,timeRange=c(8000,2500))
 westKantoSPD_blocks = spd2rc(westKantoSPD,breaks=seq(8000,2500,-100))
 westKantoSPD_sampled = sampleDates(x = westKantoCal,bins = westKantoBin,nsim = 1000)
 
+tblocksCal =matrix(NA,nrow=length(tbs),ncol=nsim)
 
-save(westKantoCal,westKantoBin,westKantoSPD,westKantoSPD_blocks,westKantoSPD_sampled,file="./R_images/spdRes.RData")
+for (s in 1:nsim)
+{
+  tblocksCal[,s]=as.numeric(rev(table(cut(t(westKantoSPD_sampled$sdates)[,s],breaks=tbs2))))
+}
+
+save(westKantoCal,westKantoBin,westKantoSPD,westKantoSPD_blocks,westKantoSPD_sampled,tblocksCal,file="./R_images/spdRes.RData")
 
 
 # Rolling Correlation Analysis
 
 
 
-################### FIGURES ##########################
-
-
-## Plot Results ####
-
-# Crema 2012 re-analysis
-plot(tbs.crema2012,tblocks.crema2012[,1],pch=20,col="lightgrey",xlim=c(7000,3200),ylim=range(tblocks),ylab="Number of Residential Units",xlab="cal BP",type="n")
-apply(tblocks.crema2012,2,lines,x=tbs,col="lightgrey")
-lines(tbs.crema2012,apply(tblocks.crema2012,1,mean))
-points(tbs.crema2012,apply(tblocks.crema2012,1,mean),pch=20)
-axis(1,at=seq(16000,600,-100),tck=-0.01,labels=NA)
 
 
 
 
+
+## Correlation Analysis ####
+tblockRoll10.trap = rollCor(tblocks.trap,tblocksCal,rollsize = 10) 
+tblockRoll10.gauss = rollCor(tblocks.gauss,tblocksCal,rollsize = 10) 
+tblockRoll10.unif = rollCor(tblocks.unif,tblocksCal,rollsize = 10) 
+overallCorr.trap = overallCorr.unif = overallCorr.gauss = numeric(length=nsim)
+
+for (s in 1:nsim)
+{
+  overallCorr.trap[s] = cor(tblocks.trap[,s],tblocksCal[,s])
+  overallCorr.gauss[s] = cor(tblocks.gauss[,s],tblocksCal[,s])
+  overallCorr.unif[s] = cor(tblocks.unif[,s],tblocksCal[,s])
+}
+
+#mean(overallCorr.trap)
+#quantile(overallCorr.trap,c(0.025,0.975))
+
+save(tblockRoll10.trap,tblockRoll10.gauss,tblockRoll10.unif,overallCorr.trap,overallCorr.gauss,overallCorr.unif,file="./R_images/corr.RData")
