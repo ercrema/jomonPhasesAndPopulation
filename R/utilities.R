@@ -101,3 +101,25 @@ convertToArray= function(x,type,phases)
   return(list(posterior=res,type=type))
 }
 
+
+error.bar <- function(x,upper, lower=upper, length=0.1,...){
+  arrows(x,upper, x, lower, angle=90, code=3, length=length, ...)
+}
+
+
+rollCor = function(x,y,rollsize=10)
+{
+ require(TTR)
+ rMatrix = matrix(NA,nrow(x),ncol(x))
+ for (s in 1:ncol(x))
+ {
+   rMatrix[,s] = runCor(x[,s],y[,s],n=rollsize)
+ }
+ return(rMatrix)
+}
+
+
+
+
+
+
