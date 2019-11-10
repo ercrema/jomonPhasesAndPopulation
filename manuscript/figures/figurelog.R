@@ -57,10 +57,70 @@ dev.off()
 
 
 ### Figure 2 ####
+load("../../R_images/pithouseData.RData")
+load("../../R_images/spdRes.RData")
+
+nsim = ncol(simTrapezoid)
+#tbs = seq(14950,650,-100)
+tbs = seq(7950,2550,-100)
+tbs2 = seq(8000,2500,-100)
+
+tblocks = tblocksCal =matrix(NA,nrow=length(tbs),ncol=nsim)
+
+for (s in 1:nsim)
+{
+  #tblocks[,s]=as.numeric(rev(table(cut(simTrapezoid[,s],breaks=seq(15000,600,-100)))))
+  tblocks[,s]=as.numeric(rev(table(cut(simTrapezoid[,s],breaks=tbs2))))
+  tblocksCal[,s]=as.numeric(rev(table(cut(t(westKantoSPD_sampled$sdates)[,s],breaks=tbs2))))
+}
+
+tblockRoll10 = rollCor(tblocks,tblocksCal,rollsize = 10)
+overallCorr = numeric(length=nsim)
+for (s in 1:nsim)
+{
+  overallCorr[s] = cor(tblocks[,s],tblocksCal[,s])
+}
+mean(overallCorr)
+quantile(overallCorr,c(0.025,0.975))
 
 
 
-### Figure 3 ####
 
+pdf(file = "./figure2.pdf",width = 6,height = 7)
+par(mfrow=c(3,1),mar=c(0,4,0,1)+0.1)
+b=barplot(apply(tblocks,1,mean),border=NA,col="darkorange",ylim=range(tblocks),space = 0)
+error.bar(b,upper=apply(tblocks,1,quantile,0.975),lower=apply(tblocks,1,quantile,0.025),length=0.02)
+abline(v=which(tbs2%in%seq(8000,2500,-500))-1,col="white",lty=3)
+#mtext(1,line=2,text = 'cal BP')
+axis(side=1,at=which(tbs2%in%seq(8000,2500,-1000))-1,labels=seq(8000,2500,-1000),tck=-0.03,padj=-0.6)
+axis(side=1,at=which(tbs2%in%seq(8000,2500,-500))-1,labels=NA,tck=-0.02)
+axis(side=1,at=which(tbs2%in%seq(8000,2500,-100))-1,labels=NA,tck=-0.01)
+mtext(2,line=3,text = 'Number of Pit-dwellings',cex=0.7)
+legend("topleft",legend="a",bty = 'n',cex=2)
+
+par(mar=c(5,4,2,1)+0.1)
+b2=barplot(westKantoSPD2$sumblock,border=NA,col="royalblue",space = 0)
+abline(v=which(tbs2%in%seq(8000,2500,-500))-1,col="white",lty=3)
+axis(side=1,at=which(tbs2%in%seq(8000,2500,-1000))-1,labels=seq(8000,2500,-1000),tck=-0.03,padj=-0.6)
+axis(side=1,at=which(tbs2%in%seq(8000,2500,-500))-1,labels=NA,tck=-0.02)
+axis(side=1,at=which(tbs2%in%seq(8000,2500,-100))-1,labels=NA,tck=-0.01)
+#mtext(1,line=2,text = 'cal BP')
+mtext(2,line=3,text = 'Summed Probability of 14C Dates',cex=0.7)
+legend("topleft",legend="b",bty = 'n',cex=2)
+
+par(mar=c(4,4,0,1)+0.1)
+plot(b2,apply(tblockRoll10,1,mean,na.rm=TRUE),ylim=c(-1,1),type='n',axes=FALSE,xlab="",ylab="")
+polygon(c(b2,rev(b2)),c(apply(tblockRoll10,1,quantile,0.025,na.rm=TRUE),rev(apply(tblockRoll10,1,quantile,0.975,na.rm=TRUE))),border=NA,col='lightgrey')
+abline(v=which(tbs2%in%seq(8000,2500,-500))-1,col="white",lty=3)
+lines(b2,apply(tblockRoll10,1,mean,na.rm=TRUE),lwd=2)
+abline(h=0,lty=2,col='red')
+mtext(2,line=3,text = '1000 yrs Rolling Correlation',cex=0.7)
+axis(side=1,at=which(tbs2%in%seq(8000,2500,-1000))-1,labels=seq(8000,2500,-1000),tck=-0.03,padj=-0.6)
+axis(side=1,at=which(tbs2%in%seq(8000,2500,-500))-1,labels=NA,tck=-0.02)
+axis(side=1,at=which(tbs2%in%seq(8000,2500,-100))-1,labels=NA,tck=-0.01)
+axis(side=2,at=c(-1,-0.5,0,0.5,1))
+mtext(1,line=2,text = 'cal BP')
+legend("topleft",legend="c",bty = 'n',cex=2)
+dev.off()
 
 
