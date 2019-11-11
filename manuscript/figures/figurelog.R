@@ -55,14 +55,40 @@ text(x=11850,y=43.5,"c")
 text(x=10800,y=37.5,"d")
 dev.off()
 
-
 ### Figure 2 ####
+load("./R_images/simdatesPithouses.RData")
+
+bws = sapply(1:nsim,function(x,y){density(y[,x])$bw},y=simTrapezoid)
+densMat = matrix(NA,nrow=length(8000:2500),ncol=nsim)
+
+for (s in 1:nsim)
+{
+  tmp=density(simTrapezoid[,s],bw=mean(bws))
+  densMat[,s]=approx(x = tmp$x,y=tmp$y,xout=8000:2500)$y
+}
+
+pdf(file = "./figure3.pdf",width = 5,height = 5)
+plot(0,0,xlim=c(8000,2500),ylim=range(densMat),type="n",xlab="",ylab="",axes=FALSE)
+apply(densMat,2,lines,x=8000:2500,col=rgb(0.8,0.8,0.8,0.05))
+lines(8000:2500,apply(densMat,1,mean),col='darkred',lwd=1.5)
+axis(side=1,at=seq(8000,2500,-1000),labels=seq(8000,2500,-1000),tck=-0.03,padj=-0.6)
+axis(side=1,at=seq(8000,2500,-500),labels=NA,tck=-0.02)
+axis(side=1,at=seq(8000,2500,-100),labels=NA,tck=-0.01)
+mtext(2,line=3,text = 'Composite Kernel Density Estimate')
+mtext(1,line=2,text = 'cal BP')
+axis(side=2)
+box()
+dev.off()
+
+
+
+### Figure 3 ####
 load("../../R_images/simdatesPithouses.RData")
 load("../../R_images/spdRes.RData")
 load("../../R_images/corr.RData")
 
 
-pdf(file = "./figure2.pdf",width = 6,height = 7)
+pdf(file = "./figure3.pdf",width = 6,height = 7)
 par(mfrow=c(3,1),mar=c(0,4,0,1)+0.1)
 b=barplot(apply(tblocks.trap,1,mean),border=NA,col="darkorange",ylim=range(tblocks.trap),space = 0)
 error.bar(b,upper=apply(tblocks.trap,1,quantile,0.975),lower=apply(tblocks.trap,1,quantile,0.025),length=0.02)
