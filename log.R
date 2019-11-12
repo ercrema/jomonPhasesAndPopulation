@@ -40,11 +40,9 @@ save(c14data,file="./R_images/c14data.RData")
 
 ## Generate Summary Table ###
 phases =c("S0","S1.1","S1.2","S2.1","S2.2",paste0("S",3:8),paste0("Z",1:7),"C1","C234","C56","C78",paste0("C",9:14),paste0("K",1:8),paste0("B",1:6))
-kobayashiPhases = c("S0","S1-1","S1-2","S2-1","S2-2","S3-1;S3-2","S4","S5","S6","S7","S8","Z1","Z2","Z3","Z4","Z5","Z6","Z7","C1","C2;C3;C4","C5;C6","C7;C8","C9a;C9bc","C10a;C10b;C10c","C11ab;C11c","C12a;C12b;C12c","C13a;C13b","C14a;C14b","K1-1;K1-2;K1-3","K2","K3","K4","K5","K6","K7","K8-1;K8-2","B1","B2","B3","B4","B5","B6")
 
-table1 = data.frame(phases,kobayashi2017=kobayashiPhases,samples=NA,effsamples=NA,nsites=NA,correspondingphases=NA,correspondingphasesEn=NA)
-conversion = read.csv("./data/suzuki/conversion.csv",stringsAsFactors = FALSE)
-conversionList = vector("list",length=nrow(conversion))
+table1 = data.frame(phases,samples=NA,effsamples=NA,nsites=NA)
+
 
 for (i in 1:length(phases))
 {
@@ -52,13 +50,10 @@ for (i in 1:length(phases))
   table1$samples[i] = nrow(tmp)
   table1$effsamples[i] = sum(is.na(tmp$CombineGroup)) + length(unique(tmp$CombineGroup[which(!is.na(tmp$CombineGroup))]))
   table1$nsites[i] = length(unique(tmp$SiteID))
-  k = which(conversion$Interval_Start==phases[i]|conversion$Interval_End==phases[i])
-  table1$correspondingphases[i]=paste(conversion$PotteryPhase_Suzuki1986[k],collapse=";")
-  table1$correspondingphasesEn[i]=paste(conversion$PotteryPhase_Suzuki1986_En[k],collapse=";")
 }
 
 # store base table (to be manually edited)
-write.csv(table1,file="./manuscript/tables/table1_base.csv")
+write.csv(table1,file="./manuscript/tables/table1_base.csv",row.names=FALSE)
 
 
 
