@@ -1,43 +1,43 @@
-"","phases","kobayashi2017","samples","effsamples","nsites","correspondingphases","correspondingphasesEn"
-"1","S0","S0",16,16,4,"",""
-"2","S1.1","S1-1",64,62,16,"隆起線文系;爪型文系","Biryukisenmon-kei;Tsumegatamon-kei"
-"3","S1.2","S1-2",77,77,24,"",""
-"4","S2.1","S2-1",94,90,20,"爪型文系;押捺文系","Tsumegatamon-kei;Ounatsumon-kei"
-"5","S2.2","S2-2",38,38,8,"回転縄文系","Kaitenjomon-kei"
-"6","S3","S3-1;S3-2",107,107,47,"井草I;井草II・大丸;夏島;稲荷台;立野;稲荷原・大浦山・花輪台１;平坂・花輪台２","Igusa I;Igusa II/Oomaru;Natsuhima;Inaridai;Tachino;Inarihara/Oourayama/Hanawadai 1;Hirasaka / Hanawadai 2"
-"7","S4","S4",45,45,24,"三戸;田戸下層・細久保;田戸上層","Mito;Lower Tado / Hosokubo;Upper Tado"
-"8","S5","S5",22,22,10,"子母口;野島","Shiboguchi;Nojima"
-"9","S6","S6",14,14,6,"鵜ヶ島台","Ugajimadai"
-"10","S7","S7",48,47,14,"茅山下層;茅山上層","Lower Kayama;Upper Kayama"
-"11","S8","S8",85,80,21,"（上の山）;（入海I）;（入海II）;（石山）;打越;（天神山）;神之末台;（塩屋）下吉井","(Uenoyama);(Iriumi I);(Iriumi II);(Ishiyama);Okkoshi;(Tenjinyama);Kaminokidai;(Shioua) Shimoyoshii"
-"12","Z1","Z1",56,50,16,"花積下層・中越;五領ヶ台１","Lower Hanazumi / Nakakoshi;Goryogadai I"
-"13","Z2","Z2",31,29,15,"関山・二ツ木・神ノ木","Sekiyama / Futatsuki/ Kaminoki"
-"14","Z3","Z3",55,53,8,"黒浜・有尾","Kurohama/Ario"
-"15","Z4","Z4",16,14,10,"諸磯a・南大原","Moroiso a / Minamioohara"
-"16","Z5","Z5",59,55,15,"諸磯b・上原","Moroiso b/ Uehara"
-"17","Z6","Z6",33,30,15,"諸磯c・日向I・籠畑I・下島","Moroiso c / Hinata I / Kagobatake I / Shitajima"
-"18","Z7","Z7",29,29,16,"十三菩提・日向II・籠畑II","Jusanbodai / Hinata II /Kagobatake II"
-"19","C1","C1",10,10,6,"",""
-"20","C234","C2;C3;C4",19,19,14,"五領ヶ台２・阿玉台１a","Goryogadai II / Otamadai 1a"
-"21","C56","C5;C6",22,22,13,"五領ヶ台２・阿玉台１a;貉沢;勝坂I・阿玉台１b;新道","Goryogadai II / Otamadai 1a;Mujinasawa;Katsusaka I / Otamadai 1b;Aramichi"
-"22","C78","C7;C8",33,32,16,"阿玉台２・藤内I;勝坂２・藤内;阿玉台３","Otamadai 2 / Fujiuchi I;Katsusaka 2 / Fujiuchi II;Otamadai 3"
-"23","C9","C9a;C9bc",61,61,28,"井戸尻I;勝坂３・阿玉台４・;井戸尻III","Idojiri I;Katsusaka 3 / Otamadai 4;Idojiri III"
-"24","C10","C10a;C10b;C10c",58,58,23,"大木８a・加曽利E1・曽利I;加曽利EI","Daigi 8a / Kasori E1 / Sori I;Kasori EI"
-"25","C11","C11ab;C11c",41,41,21,"大木８b・加曽利E２・曽利II;曽利III;加曽利EII","Daigi 8b / Kasori E2 / Sori II;Sori III;Kasori EII"
-"26","C12","C12a;C12b;C12c",106,105,30,"大木９・加曽利E３;曽利IV;加曽利EII;加曽利EIII","Daigi 9 / Kasori E3;Sori IV;Kasori EII;Kasori EIII"
-"27","C13","C13a;C13b",64,63,23,"加曽利EIII;大木１０・加曽利E４・曽利V;加曽利EIV","Kasori EIII;Daigi 19 / Kasori E4 / Sori V;Kasori EIV"
-"28","C14","C14a;C14b",11,11,7,"",""
-"29","K1","K1-1;K1-2;K1-3",37,37,23,"称名寺","Shomyoji"
-"30","K2","K2",103,65,17,"堀之内１","Horinouchi 1"
-"31","K3","K3",54,49,16,"堀之内２","Horinouchi 2"
-"32","K4","K4",28,25,11,"加曽利B1","Kasori B1"
-"33","K5","K5",58,48,9,"加曽利B2","Kasori B2"
-"34","K6","K6",26,24,6,"加曽利B3","Kasori B3"
-"35","K7","K7",47,43,16,"高井東・曽谷","Takaihigashi / Soya"
-"36","K8","K8-1;K8-2",39,38,11,"安行1;安行2","Angyo 1;Angyo 2"
-"37","B1","B1",89,83,29,"大洞B・安行3a","Oobora B / Angyo 3a"
-"38","B2","B2",73,58,25,"大洞BC・安行3b","Oobora BC / Angyo 3b"
-"39","B3","B3",44,41,20,"大洞C1・安行3c・前浦１","Oobora C1 / Angyo 3c / Maeura 1"
-"40","B4","B4",54,51,17,"大洞C２・安行3d・前浦２","Oobora C2 / Angyo 3d / Maeura 2"
-"41","B5","B5",58,54,27,"大洞A・千網・氷I","Oobora A /Chiami / Koori I"
-"42","B6","B6",96,52,21,"大洞A’・荒海・氷II","Oobora A’ / Arami / Koori II"
+"phases","samples","effsamples","nsites"
+"S0",16,16,4
+"S1.1",64,62,16
+"S1.2",77,77,24
+"S2.1",94,90,20
+"S2.2",38,38,8
+"S3",107,107,47
+"S4",45,45,24
+"S5",22,22,10
+"S6",14,14,6
+"S7",48,47,14
+"S8",85,80,21
+"Z1",56,50,16
+"Z2",31,29,15
+"Z3",55,53,8
+"Z4",16,14,10
+"Z5",59,55,15
+"Z6",33,30,15
+"Z7",29,29,16
+"C1",10,10,6
+"C234",19,19,14
+"C56",22,22,13
+"C78",33,32,16
+"C9",61,61,28
+"C10",58,58,23
+"C11",41,41,21
+"C12",106,105,30
+"C13",64,63,23
+"C14",11,11,7
+"K1",37,37,23
+"K2",103,65,17
+"K3",54,49,16
+"K4",28,25,11
+"K5",58,48,9
+"K6",26,24,6
+"K7",47,43,16
+"K8",39,38,11
+"B1",89,83,29
+"B2",73,58,25
+"B3",44,41,20
+"B4",54,51,17
+"B5",58,54,27
+"B6",96,52,21
