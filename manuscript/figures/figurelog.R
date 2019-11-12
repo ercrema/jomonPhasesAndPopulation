@@ -67,9 +67,10 @@ for (s in 1:nsim)
   densMat[,s]=approx(x = tmp$x,y=tmp$y,xout=8000:2500)$y
 }
 
-pdf(file = "./figure3.pdf",width = 5,height = 5)
+pdf(file = "./figure2.pdf",width = 5,height = 5)
 plot(0,0,xlim=c(8000,2500),ylim=range(densMat),type="n",xlab="",ylab="",axes=FALSE)
-apply(densMat,2,lines,x=8000:2500,col=rgb(0.8,0.8,0.8,0.05))
+
+apply(densMat[,sample(1:1000,size=100)],2,lines,x=8000:2500,col='lightgrey')
 lines(8000:2500,apply(densMat,1,mean),col='darkred',lwd=1.5)
 axis(side=1,at=seq(8000,2500,-1000),labels=seq(8000,2500,-1000),tck=-0.03,padj=-0.6)
 axis(side=1,at=seq(8000,2500,-500),labels=NA,tck=-0.02)
@@ -101,7 +102,7 @@ mtext(2,line=3,text = 'Number of Pit-dwellings',cex=0.7)
 legend("topleft",legend="a",bty = 'n',cex=2)
 
 par(mar=c(5,4,2,1)+0.1)
-b2=barplot(westKantoNaganoSPD2$sumblock,border=NA,col="royalblue",space = 0)
+b2=barplot(westKantoNaganoSPD_blocks$sumblock,border=NA,col="royalblue",space = 0)
 abline(v=which(tbs2%in%seq(8000,2500,-500))-1,col="white",lty=3)
 axis(side=1,at=which(tbs2%in%seq(8000,2500,-1000))-1,labels=seq(8000,2500,-1000),tck=-0.03,padj=-0.6)
 axis(side=1,at=which(tbs2%in%seq(8000,2500,-500))-1,labels=NA,tck=-0.02)
