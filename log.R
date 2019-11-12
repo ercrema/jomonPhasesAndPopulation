@@ -227,3 +227,20 @@ for (s in 1:nsim)
 
 ## Save output in R image file
 save(tblockRoll10.trap,tblockRoll10.gauss,tblockRoll10.unif,overallCorr.trap,overallCorr.gauss,overallCorr.unif,file="./R_images/corr.RData")
+
+## Compute Annual % Growth Rate ####
+# Compute between 5700-5600 and 5100-5000
+st = which(tbs==5650)
+en = which(tbs==5050)
+
+gr.cal=100*((tblocksCal[en,]/tblocksCal[st,])^(1/600)-1)
+gr.houses=100*((tblocks.trap[en,]/tblocks.trap[st,])^(1/600)-1)
+
+quantile(gr.cal,c(0.025,0.5,0.975))
+quantile(gr.houses,c(0.025,0.5,0.975))
+
+
+
+
+
+
