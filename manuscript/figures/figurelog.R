@@ -56,21 +56,12 @@ text(x=10800,y=37.5,"d")
 dev.off()
 
 ### Figure 2 ####
-load("./R_images/simdatesPithouses.RData")
-
-bws = sapply(1:nsim,function(x,y){density(y[,x])$bw},y=simTrapezoid)
-densMat = matrix(NA,nrow=length(8000:2500),ncol=nsim)
-
-for (s in 1:nsim)
-{
-  tmp=density(simTrapezoid[,s],bw=mean(bws))
-  densMat[,s]=approx(x = tmp$x,y=tmp$y,xout=8000:2500)$y
-}
+load("../../R_images/simdatesPithouses.RData")
 
 pdf(file = "./figure2.pdf",width = 5,height = 5)
 plot(0,0,xlim=c(8000,2500),ylim=range(densMat),type="n",xlab="",ylab="",axes=FALSE)
 
-apply(densMat[,sample(1:1000,size=100)],2,lines,x=8000:2500,col='lightgrey')
+apply(densMat.trap[,sample(ncol(densMat.trap),size=100)],2,lines,x=8000:2500,col='lightgrey')
 lines(8000:2500,apply(densMat,1,mean),col='darkred',lwd=1.5)
 axis(side=1,at=seq(8000,2500,-1000),labels=seq(8000,2500,-1000),tck=-0.03,padj=-0.6)
 axis(side=1,at=seq(8000,2500,-500),labels=NA,tck=-0.02)

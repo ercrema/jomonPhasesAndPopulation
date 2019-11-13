@@ -165,18 +165,26 @@ for (s in 1:nsim)
   tblocks.unif[,s]=as.numeric(rev(table(cut(simUniform[,s],breaks=tbs2))))
 }
 
-save(tbs,tbs2,simTrapezoid,simUniform,simGaussian,tblocks.trap,tblocks.gauss,tblocks.unif,file="./R_images/simdatesPithouses.RData")
+## Composite Kernel Density Estimate
+bws.trap = sapply(1:nsim,function(x,y){density(y[,x])$bw},y=simTrapezoid)
+bws.gauss = sapply(1:nsim,function(x,y){density(y[,x])$bw},y=simGaussian)
+bws.unif = sapply(1:nsim,function(x,y){density(y[,x])$bw},y=simUniform)
+
+densMat.trap = densMat.gauss= densMat.unif = matrix(NA,nrow=length(8000:2500),ncol=nsim)
+
+for (s in 1:nsim)
+{
+  tmp.trap=density(simTrapezoid[,s],bw=mean(bws.trap))
+  tmp.gauss=density(simGaussian[,s],bw=mean(bws.gauss))
+  tmp.unif=density(simUniform[,s],bw=mean(bws.unif))
+  
+  densMat.trap[,s]=approx(x = tmp.trap$x,y=tmp.trap$y,xout=8000:2500)$y
+  densMat.gauss[,s]=approx(x = tmp.gauss$x,y=tmp.gauss$y,xout=8000:2500)$y
+  densMat.unif[,s]=approx(x = tmp.unif$x,y=tmp.unif$y,xout=8000:2500)$y
+}
 
 
-
-
-
-
-
-
-
-
-
+save(tbs,tbs2,simTrapezoid,simUniform,simGaussian,tblocks.trap,tblocks.gauss,tblocks.unif,densMat.trap,densMat.gauss,densMat.unif,file="./R_images/simdatesPithouses.RData")
 
 
 ## SPD Analysis ####
