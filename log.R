@@ -165,26 +165,39 @@ for (s in 1:nsim)
   tblocks.unif[,s]=as.numeric(rev(table(cut(simUniform[,s],breaks=tbs2))))
 }
 
-## Composite Kernel Density Estimate
+## Composite Kernel Density Estimate for Each subregion
+swkanto = which(pithouseData$Prefecture%in%c("Tokyo","Saitama","Kanagawa"))
+chubukochi = which(pithouseData$Prefecture%in%c("Nagano","Yamanashi"))
+
+
+
 bws.trap = sapply(1:nsim,function(x,y){density(y[,x])$bw},y=simTrapezoid)
 bws.gauss = sapply(1:nsim,function(x,y){density(y[,x])$bw},y=simGaussian)
 bws.unif = sapply(1:nsim,function(x,y){density(y[,x])$bw},y=simUniform)
 
-densMat.trap = densMat.gauss= densMat.unif = matrix(NA,nrow=length(8000:2500),ncol=nsim)
+densMat.trap.swkanto = densMat.gauss.swkanto= densMat.unif.swkanto = 
+densMat.trap.chubukochi = densMat.gauss.chubukochi= densMat.unif.chubukochi = 
+matrix(NA,nrow=length(8000:2500),ncol=nsim)
 
 for (s in 1:nsim)
 {
-  tmp.trap=density(simTrapezoid[,s],bw=mean(bws.trap))
-  tmp.gauss=density(simGaussian[,s],bw=mean(bws.gauss))
-  tmp.unif=density(simUniform[,s],bw=mean(bws.unif))
+  tmp.trap.swkanto=density(simTrapezoid[swkanto,s],bw=mean(bws.trap))
+  tmp.gauss.swkanto=density(simGaussian[swkanto,s],bw=mean(bws.gauss))
+  tmp.unif.swkanto=density(simUniform[swkanto,s],bw=mean(bws.unif))
+  tmp.trap.chubukochi=density(simTrapezoid[chubukochi,s],bw=mean(bws.trap))
+  tmp.gauss.chubukochi=density(simGaussian[chubukochi,s],bw=mean(bws.gauss))
+  tmp.unif.chubukochi=density(simUniform[chubukochi,s],bw=mean(bws.unif))
   
-  densMat.trap[,s]=approx(x = tmp.trap$x,y=tmp.trap$y,xout=8000:2500)$y
-  densMat.gauss[,s]=approx(x = tmp.gauss$x,y=tmp.gauss$y,xout=8000:2500)$y
-  densMat.unif[,s]=approx(x = tmp.unif$x,y=tmp.unif$y,xout=8000:2500)$y
+  densMat.trap.swkanto[,s]=approx(x = tmp.trap.swkanto$x,y=tmp.trap.swkanto$y,xout=8000:2500)$y
+  densMat.gauss.swkanto[,s]=approx(x = tmp.gauss.swkanto$x,y=tmp.gauss.swkanto$y,xout=8000:2500)$y
+  densMat.unif.swkanto[,s]=approx(x = tmp.unif.swkanto$x,y=tmp.unif.swkanto$y,xout=8000:2500)$y  
+  densMat.trap.chubukochi[,s]=approx(x = tmp.trap.chubukochi$x,y=tmp.trap.chubukochi$y,xout=8000:2500)$y
+  densMat.gauss.chubukochi[,s]=approx(x = tmp.gauss.chubukochi$x,y=tmp.gauss.chubukochi$y,xout=8000:2500)$y
+  densMat.unif.chubukochi[,s]=approx(x = tmp.unif.chubukochi$x,y=tmp.unif.chubukochi$y,xout=8000:2500)$y
 }
 
 
-save(tbs,tbs2,simTrapezoid,simUniform,simGaussian,tblocks.trap,tblocks.gauss,tblocks.unif,densMat.trap,densMat.gauss,densMat.unif,file="./R_images/simdatesPithouses.RData")
+save(tbs,tbs2,simTrapezoid,simUniform,simGaussian,tblocks.trap,tblocks.gauss,tblocks.unif,densMat.trap.swkanto,densMat.trap.swkanto,densMat.unif.swkanto,densMat.trap.chubukochi,densMat.gauss.chubukochi,densMat.unif.chubukochi,file="./R_images/simdatesPithouses.RData")
 
 
 ## SPD Analysis ####
