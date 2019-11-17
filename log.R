@@ -177,7 +177,7 @@ bws.unif = sapply(1:nsim,function(x,y){density(y[,x])$bw},y=simUniform)
 
 densMat.trap.swkanto = densMat.gauss.swkanto= densMat.unif.swkanto = 
 densMat.trap.chubukochi = densMat.gauss.chubukochi= densMat.unif.chubukochi = 
-matrix(NA,nrow=length(8000:2500),ncol=nsim)
+densMat.trap = densMat.gauss= densMat.unif = matrix(NA,nrow=length(8000:3000),ncol=nsim)
 
 for (s in 1:nsim)
 {
@@ -187,13 +187,20 @@ for (s in 1:nsim)
   tmp.trap.chubukochi=density(simTrapezoid[chubukochi,s],bw=mean(bws.trap))
   tmp.gauss.chubukochi=density(simGaussian[chubukochi,s],bw=mean(bws.gauss))
   tmp.unif.chubukochi=density(simUniform[chubukochi,s],bw=mean(bws.unif))
+  tmp.trap=density(simTrapezoid[,s],bw=mean(bws.trap))
+  tmp.gauss=density(simGaussian[,s],bw=mean(bws.gauss))
+  tmp.unif=density(simUniform[,s],bw=mean(bws.unif))
   
-  densMat.trap.swkanto[,s]=approx(x = tmp.trap.swkanto$x,y=tmp.trap.swkanto$y,xout=8000:2500)$y
-  densMat.gauss.swkanto[,s]=approx(x = tmp.gauss.swkanto$x,y=tmp.gauss.swkanto$y,xout=8000:2500)$y
-  densMat.unif.swkanto[,s]=approx(x = tmp.unif.swkanto$x,y=tmp.unif.swkanto$y,xout=8000:2500)$y  
-  densMat.trap.chubukochi[,s]=approx(x = tmp.trap.chubukochi$x,y=tmp.trap.chubukochi$y,xout=8000:2500)$y
-  densMat.gauss.chubukochi[,s]=approx(x = tmp.gauss.chubukochi$x,y=tmp.gauss.chubukochi$y,xout=8000:2500)$y
-  densMat.unif.chubukochi[,s]=approx(x = tmp.unif.chubukochi$x,y=tmp.unif.chubukochi$y,xout=8000:2500)$y
+  
+  densMat.trap.swkanto[,s]=approx(x = tmp.trap.swkanto$x,y=tmp.trap.swkanto$y,xout=8000:3000)$y
+  densMat.gauss.swkanto[,s]=approx(x = tmp.gauss.swkanto$x,y=tmp.gauss.swkanto$y,xout=8000:3000)$y
+  densMat.unif.swkanto[,s]=approx(x = tmp.unif.swkanto$x,y=tmp.unif.swkanto$y,xout=8000:3000)$y  
+  densMat.trap.chubukochi[,s]=approx(x = tmp.trap.chubukochi$x,y=tmp.trap.chubukochi$y,xout=8000:3000)$y
+  densMat.gauss.chubukochi[,s]=approx(x = tmp.gauss.chubukochi$x,y=tmp.gauss.chubukochi$y,xout=8000:3000)$y
+  densMat.unif.chubukochi[,s]=approx(x = tmp.unif.chubukochi$x,y=tmp.unif.chubukochi$y,xout=8000:3000)$y
+  densMat.trap[,s]=approx(x = tmp.trap$x,y=tmp.trap$y,xout=8000:3000)$y
+  densMat.gauss[,s]=approx(x = tmp.gauss$x,y=tmp.gauss$y,xout=8000:3000)$y
+  densMat.unif[,s]=approx(x = tmp.unif$x,y=tmp.unif$y,xout=8000:3000)$y
 }
 
 
@@ -201,8 +208,8 @@ save(tbs,tbs2,simTrapezoid,simUniform,simGaussian,tblocks.trap,tblocks.gauss,tbl
 
 
 ## SPD Analysis ####
-tbs = seq(7950,2550,-100)
-tbs2 = seq(8000,2500,-100)
+tbs = seq(7950,3050,-100)
+tbs2 = seq(8000,3000,-100)
 
 #Load C14 data image (generate by running the script in bindC14csv.R)
 load("./R_images/westKantoNaganoC14.RData")
@@ -219,8 +226,16 @@ for (s in 1:nsim)
   tblocksCal[,s]=as.numeric(rev(table(cut(t(westKantoNaganoSPD_sampled$sdates)[,s],breaks=tbs2))))
 }
 
+
+# Comparing to pithouse dynamics
+ckdeMean = apply(densMat.trap,1,mean)
+customModel = data.frame(calBP=8000:3000,PrDens=ckdeMean/sum(ckdeMean))
+
+res.compare=modelTest(x=westKantoNaganoCal,bins = westKantoNaganoBin,errors = westKantoNaganoC14$Error, timeRange=c(8000,3000), changexpr=expression(100*((t1/t0)^(1/d) - 1)),model='custom',predgrid=customModel,nsim=1000,backsight=100,spdnormalised=TRUE,runm=100)
+
+
 #save image file
-save(westKantoNaganoCal,westKantoNaganoBin,westKantoNaganoSPD,westKantoNaganoSPD_blocks,westKantoNaganoSPD_sampled,tblocksCal,file="./R_images/spdRes.RData")
+save(westKantoNaganoCal,westKantoNaganoBin,westKantoNaganoSPD,westKantoNaganoSPD_blocks,westKantoNaganoSPD_sampled,tblocksCal,res.compare,file="./R_images/spdRes.RData")
 
 ## Correlation Analysis ####
 
