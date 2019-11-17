@@ -153,9 +153,9 @@ simGaussian=mcsim(pithouseData[,-3],nsim=nsim,posterior=postGaussian,weights="va
 simUniform=mcsim(pithouseData[,-3],nsim=nsim,posterior=postUniform,weights="variance")
 simTrapezoid=mcsim(pithouseData[,-3],nsim=nsim,posterior=postTrapezoid,weights="variance")
 
-## Group dates in 100-yrs bins between 8000 and 2500 cal BP
-tbs = seq(7950,2550,-100)
-tbs2 = seq(8000,2500,-100)
+## Group dates in 100-yrs bins between 8000 and 3000 cal BP
+tbs = seq(7950,3050,-100)
+tbs2 = seq(8000,3000,-100)
 tblocks.gauss = tblocks.unif = tblocks.trap =matrix(NA,nrow=length(tbs),ncol=nsim)
 
 for (s in 1:nsim)
@@ -208,8 +208,8 @@ tbs2 = seq(8000,2500,-100)
 load("./R_images/westKantoNaganoC14.RData")
 westKantoNaganoCal = calibrate(westKantoNaganoC14$CRA,westKantoNaganoC14$Error,normalise=FALSE) #calibrate
 westKantoNaganoBin = binPrep(westKantoNaganoC14$SiteID,westKantoNaganoC14$CRA,h=200) #bin (200 years)
-westKantoNaganoSPD = spd(westKantoNaganoCal,timeRange=c(8000,2500)) #generate SPD
-westKantoNaganoSPD_blocks = spd2rc(westKantoNaganoSPD,breaks=seq(8000,2500,-100)) #aggregate by 100yrs blocks
+westKantoNaganoSPD = spd(westKantoNaganoCal,timeRange=c(8000,3000)) #generate SPD
+westKantoNaganoSPD_blocks = spd2rc(westKantoNaganoSPD,breaks=seq(8000,3000,-100)) #aggregate by 100yrs blocks
 westKantoNaganoSPD_sampled = sampleDates(x = westKantoNaganoCal,bins = westKantoNaganoBin,nsim = 1000) #sample random dates
 
 tblocksCal =matrix(NA,nrow=length(tbs),ncol=nsim)
@@ -238,8 +238,7 @@ for (s in 1:nsim)
   overallCorr.unif[s] = cor(tblocks.unif[,s],tblocksCal[,s])
 }
 
-#mean(overallCorr.trap)
-#quantile(overallCorr.trap,c(0.025,0.975))
+round(quantile(overallCorr.trap,c(0.025,0.5,0.975)),2)
 
 ## Save output in R image file
 save(tblockRoll10.trap,tblockRoll10.gauss,tblockRoll10.unif,overallCorr.trap,overallCorr.gauss,overallCorr.unif,file="./R_images/corr.RData")
