@@ -93,9 +93,9 @@ df.gaussian.rerun = data.frame(id=as.character(c14data.gaussian.rerun$LabCode),g
 df.uniform.rerun = data.frame(id=as.character(c14data.uniform.rerun$LabCode),grp=c14data.uniform.rerun$CombineGroup,stringsAsFactors = FALSE)
 df.trapezoid.rerun = data.frame(id=as.character(c14data.trapezoid.rerun$LabCode),grp=c14data.trapezoid.rerun$CombineGroup,stringsAsFactors = FALSE)
 
-gaussian.agreement = oxcalReadjs(x=df.gaussian.rerun, model='gaussianR',path='./oxcal/results/')
-uniform.agreement = oxcalReadjs(x=df.uniform.rerun, model='uniformR',path='./oxcal/results/')
-trapezoid.agreement = oxcalReadjs(x=df.trapezoid.rerun, model='trapezoidR',path='./oxcal/results/')
+gaussian.agreementR = oxcalReadjs(x=df.gaussian.rerun, model='gaussianR',path='./oxcal/results/')
+uniform.agreementR = oxcalReadjs(x=df.uniform.rerun, model='uniformR',path='./oxcal/results/')
+trapezoid.agreementR = oxcalReadjs(x=df.trapezoid.rerun, model='trapezoidR',path='./oxcal/results/')
 
 # Read MCMC samples (excluding first (pass number) and last (empty) column)
 gaussian.samples = read.csv("./oxcal/results/mcmcGaussianR.csv")[,-c(1,86)] 
@@ -109,7 +109,7 @@ postUniform=convertToArray(uniform.samples,type="uniform",phases)
 postTrapezoid=convertToArray(trapezoid.samples,type="trapezium",phases)
 
 # Save output in an R image file
-save(postTrapezoid,postUniform,postGaussian,file="./R_images/posteriorSamples.RData")
+save(df.uniform.rerun,df.uniform.rerun,df.trapezoid.rerun,gaussian.agreementR,uniform.agreementR,trapezoid.agreementR,gaussian.agreement,uniform.agreement,trapezoid.agreement,postTrapezoid,postUniform,postGaussian,file="./R_images/posteriorSamples.RData")
 
 
 ## Simulate Pithouse Dates ####
