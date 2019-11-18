@@ -131,8 +131,8 @@ for (s in 1:nsim)
 }
 
 ## Composite Kernel Density Estimate for Each subregion
-swkanto = which(pithouseData$Prefecture%in%c("Tokyo","Saitama","Kanagawa"))
-chubukochi = which(pithouseData$Prefecture%in%c("Nagano","Yamanashi"))
+swkanto = which(pithouseData$Region == "SWKanto")
+chubukochi = which(pithouseData$Region == "ChubuHighlands")
 
 
 
