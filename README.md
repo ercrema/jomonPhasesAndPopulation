@@ -10,13 +10,19 @@ All raw data can be found in the [data](./data) directory. The file [c14dates.cs
 
 ## Bayesian ceramic phase modelling
 
-This stage of the analysis (recorded in the the [log.R](./log.R) file) involves the use of [OxCal](https://c14.arch.ox.ac.uk/oxcal/OxCal.html). The process is carried out in three steps. Firstly, potential outliers are detected within each set of dates associated with the same event (e.g. different organic residues from the same vessel). This is achievied by using the `outlierExcluder()` function (stored [here](./R/outlierAnalysis.R)) which internally calls OxCal from R using the [oxcAAR](https://CRAN.R-project.org/package=oxcAAR) package. The function eliminates potential outliers from our initial sets. The result of this routine is stored in the R image file [c14data.RData](./R_images/c14data.RData). 
+This stage of the analysis (recorded in the [log.R](./log.R) file) involves the use of [OxCal](https://c14.arch.ox.ac.uk/oxcal/OxCal.html). The process is carried out in three steps. Firstly, potential outliers are detected within each set of dates associated with the same event (e.g. different organic residues from the same vessel). This is achievied by using the `outlierExcluder()` function (stored [here](./R/outlierAnalysis.R)) which internally calls OxCal from R using the [oxcAAR](https://CRAN.R-project.org/package=oxcAAR) package. The function eliminates potential outliers from our initial sets. The result of this routine is stored in the R image file [c14data.RData](./R_images/c14data.RData). 
 
 The second step of analysis consisted in creating OxCal scripts for different probability distributions emulating putative _within-phase uncertainty_. This is achieved by using the `oxcalScriptGen()` function (located [in this file](./R/oxcalScriptCreator.R), which generates the OxCal scripts from the provided dates. The script (stored in the directory [./oxcal/oxcalscripts](./oxcal/oxcalscripts)) can then be loaded into OxCal for analyses. The results are stored in the directory [./oxcal/results](./oxcal/results), and include the .csv storing the posterior samples and a JavaScript file (.js) containing key statistics such as individual and overall agreement indices that can be read using the `oxcalReadjs()` function (see source code [here](./R/oxcalReadjs.R)). 
 
-The third and final step consist of removing samples with low agreement index for each of the probability distributions and generate a new set of OxCal scripts (with suffix "R" to distinguish this second submission to OxCal, e.g. `gaussian.oxcal` and `gaussianR.oxcal`). The result of the OxCal analysis is then processed and the posterior samples organised into a series of objects stored in R image [posteriorSamples.RData](./R_images/posteriorSamples.RData).
+The third and final step consist of removing samples with low agreement index for each of the probability distributions and generate a new set of OxCal scripts (with suffix "R" to distinguish this second submission to OxCal, e.g. `gaussian.oxcal` and `gaussianR.oxcal`). The result of the OxCal analysis is then processed and the posterior samples organised into a series of objects stored in the R image [posteriorSamples.RData](./R_images/posteriorSamples.RData).
 
+## Monte-Carlo Simulation of Pithouse Dates
 
+Dates of individual pithouse are simulated `n` times taking account: 1) the uncertatinty within the phase ( _within phase uncertainty_ ); 2) the uncertainty in defining the membership of the pithouse to a particular phase ( _phase assignement uncertainty_ ); and the uncertainty associated with the parameters of the probability distribution describing the _within phase uncertainty_  (i.e. the _phase boundary uncertainty_). The function `mcsim()` (see source code [here](./R/mcsim.R)) takes into account all three forms o uncertainty and generates `n` sets of pithouse with randomly sampled absolute calendar dates. The R image fle [simdatesPithouses.RData](./R/simdatesPithouses.RData) contains the simulated dates, along with counts organised in 100 years bins (between 8,000 and 3,000 cal BP), and the result of a composite kernel density estimate (details of the steps are in [log.R](./log.R) file).   
+
+## SPD Analysis
+
+## Comparisons between pithouse data and radiocarbon density
 
 
 # File Structure
