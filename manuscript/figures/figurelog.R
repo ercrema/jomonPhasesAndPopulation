@@ -58,7 +58,8 @@ dev.off()
 ### Figure 2 ####
 load("../../R_images/simdatesPithouses.RData")
 
-pdf(file = "./figure2.pdf",width = 5,height = 9)
+pdf(file = "./figure2.pdf",width = 5,height = 8)
+par(mfrow=c(2,1),mar=c(3,4,1,1))
 plot(0,0,xlim=c(8000,2500),ylim=range(densMat.trap.swkanto,na.rm=TRUE),type="n",xlab="",ylab="",axes=FALSE)
 apply(densMat.trap.swkanto[,sample(ncol(densMat.trap.swkanto),size=100)],2,lines,x=8000:2500,col='lightgrey')
 lines(8000:2500,apply(densMat.trap.swkanto,1,mean),col='darkred',lwd=1.5)
