@@ -114,9 +114,11 @@ save(df.uniform.rerun,df.uniform.rerun,df.trapezoid.rerun,gaussian.agreementR,un
 
 ## Simulate Pithouse Dates ####
 load("./R_images/pithouseData.RData")
-simGaussian=mcsim(pithouseData[,-3],nsim=nsim,posterior=postGaussian,weights="variance")
-simUniform=mcsim(pithouseData[,-3],nsim=nsim,posterior=postUniform,weights="variance")
-simTrapezoid=mcsim(pithouseData[,-3],nsim=nsim,posterior=postTrapezoid,weights="variance")
+simGaussian=mcsim(pithouseData[,-c(3,4)],nsim=nsim,posterior=postGaussian,weights="variance")
+simUniform=mcsim(pithouseData[,-c(3,4)],nsim=nsim,posterior=postUniform,weights="variance")
+# Convert any post-bomb age to postbomb
+postTrapezoid$posterior[which(postTrapezoid$posterior>0)]=-1
+simTrapezoid=mcsim(pithouseData[,-c(3,4)],nsim=nsim,posterior=postTrapezoid,weights="variance")
 
 ## Group dates in 100-yrs bins between 8000 and 3000 cal BP
 tbs = seq(7950,3050,-100)
