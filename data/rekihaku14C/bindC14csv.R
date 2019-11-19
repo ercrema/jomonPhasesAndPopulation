@@ -14,32 +14,32 @@ yamanashiC14 = read.csv("./yamanashi_T_B_5_11_2019.csv")
 
 
 #### Combine into a single data.frame
-westKantoNagano = rbind.data.frame(kanagawaC14,saitamaC14,tokyoC14,naganoC14,yamanashiC14)
+spdData = rbind.data.frame(kanagawaC14,saitamaC14,tokyoC14,naganoC14,yamanashiC14)
 
 ####Define Unique Site Identifier
 ## No sites unique identifier are provided, but some sites might have different names based on the excavation. 
 ## Use Address as Unique Identifier
-westKantoNagano$SiteID = paste0("S",as.numeric(westKantoNagano$所在地))
+spdData$SiteID = paste0("S",as.numeric(spdData$所在地))
 
 ####Remove Dates on bones
-westKantoNagano=westKantoNagano[-grep("骨",as.character(westKantoNagano$試料の種類)),] #Remove Bones (no shells)
+spdData=spdData[-grep("骨",as.character(spdData$試料の種類)),] #Remove Bones (no shells)
 
 ####Some Dates are not recorded as numeric and subset only those within 17000 and 2500 CRA
-westKantoNagano$C14年代=as.numeric(as.character(westKantoNagano$C14年代))
-westKantoNagano$C14年代.=as.numeric(as.character(westKantoNagano$C14年代.))
-westKantoNagano = subset(westKantoNagano,!is.na(C14年代)&!is.na(C14年代.))
-westKantoNagano = subset(westKantoNagano,C14年代<17000&C14年代>2500)
+spdData$C14年代=as.numeric(as.character(spdData$C14年代))
+spdData$C14年代.=as.numeric(as.character(spdData$C14年代.))
+spdData = subset(spdData,!is.na(C14年代)&!is.na(C14年代.))
+spdData = subset(spdData,C14年代<17000&C14年代>2500)
 
 
 ####Specify Prefecture
-westKantoNagano$都道府県=recode(westKantoNagano$都道府県,"11：埼玉県"="Saitama","13：東京都"="Tokyo","14：神奈川県"="Kanagawa","19：山梨県"="Yamanashi","20：長野県"="Nagano")
+spdData$都道府県=recode(spdData$都道府県,"11：埼玉県"="Saitama","13：東京都"="Tokyo","14：神奈川県"="Kanagawa","19：山梨県"="Yamanashi","20：長野県"="Nagano")
 
 
 ####Select only relevant fields
-westKantoNaganoC14 = select(westKantoNagano,都道府県,遺跡名,SiteID,試料番号,C14年代,C14年代.)
-colnames(westKantoNaganoC14) = c("Prefecture","SiteName","SiteID","LabCode","CRA","Error")                   
+spdDataC14 = select(spdData,都道府県,遺跡名,SiteID,試料番号,C14年代,C14年代.)
+colnames(spdDataC14) = c("Prefecture","SiteName","SiteID","LabCode","CRA","Error")                   
 
-save(westKantoNaganoC14,file="../../R_images/westKantoNaganoC14.RData")
+save(spdDataC14,file="../../R_images/spdC14.RData")
 
 
  
