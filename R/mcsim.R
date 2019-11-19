@@ -10,7 +10,7 @@
 #' posterior.a=convertToArray(model0a,"gaussian")
 #' result=sampler(df,nsim=100,posterior=posterior.a,weights="equal")
 
-mcsim = function(df,nsim,posterior,weights=c("equal","variance"))
+mcsim = function(df,nsim,posterior,weights=c("equal","variance"),verbose=TRUE)
 {
   require(trapezoid)
   require(rcarbon)
@@ -25,8 +25,10 @@ mcsim = function(df,nsim,posterior,weights=c("equal","variance"))
   permIndex = sapply(1:nrow(permUnique),function(x,p,complete){return(which(complete$StartPhase==p$StartPhase[x]&complete$EndPhase==p$EndPhase[x]))},p=permUnique,complete=df)
 
 # Start nsim routine
+  if (verbose) {pb <- txtProgressBar(min=1, max=nsim, style=3)}
   for (i in 1:nsim)
   {
+    if (verbose) {setTxtProgressBar(pb, i)}
   # Select a specific posterior sample
   s = posterior[[1]][,,sample(1:dim(posterior[[1]])[3],size=1)]
   # Create vector of variance for each phase
@@ -85,7 +87,7 @@ mcsim = function(df,nsim,posterior,weights=c("equal","variance"))
   }
     
   }
-  
+  if (verbose) {close(pb)}
   return(resmat)      
 }
 
