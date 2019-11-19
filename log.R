@@ -136,8 +136,6 @@ for (s in 1:nsim)
 swkanto = which(pithouseData$Region == "SWKanto")
 chubukochi = which(pithouseData$Region == "ChubuHighlands")
 
-
-
 bws.trap = sapply(1:nsim,function(x,y){density(y[,x])$bw},y=simTrapezoid)
 bws.gauss = sapply(1:nsim,function(x,y){density(y[,x])$bw},y=simGaussian)
 bws.unif = sapply(1:nsim,function(x,y){density(y[,x])$bw},y=simUniform)
@@ -170,8 +168,51 @@ for (s in 1:nsim)
   densMat.unif[,s]=approx(x = tmp.unif$x,y=tmp.unif$y,xout=8000:3000)$y
 }
 
+# Extract only lo, hi, and median values for each CKDE
+densSummary.trap.swkanto = data.frame(CalBP=8000:3000,
+                                      lo=apply(densMat.trap.swkanto,1,quantile,0.025),
+                                      hi = apply(densMat.trap.swkanto,1,quantile,0.975),
+                                      mean = apply(densMat.trap.swkanto,1,mean))
+densSummary.trap.chubukochi = data.frame(CalBP=8000:3000,
+                                         lo=apply(densMat.trap.chubukochi,1,quantile,0.025),
+                                         hi = apply(densMat.trap.chubukochi,1,quantile,0.975),
+                                         mean = apply(densMat.trap.chubukochi,1,mean))
+densSummary.trap = data.frame(CalBP=8000:3000,
+                              lo=apply(densMat.trap,1,quantile,0.025),
+                              hi = apply(densMat.trap,1,quantile,0.975),
+                              mean = apply(densMat.trap,1,mean))
 
-save(tbs,tbs2,simTrapezoid,simUniform,simGaussian,tblocks.trap,tblocks.gauss,tblocks.unif,densMat.trap.swkanto,densMat.trap.swkanto,densMat.unif.swkanto,densMat.trap.chubukochi,densMat.gauss.chubukochi,densMat.unif.chubukochi,file="./R_images/simdatesPithouses.RData")
+densSummary.gauss.swkanto = data.frame(CalBP=8000:3000,
+                                       lo=apply(densMat.gauss.swkanto,1,quantile,0.025),
+                                       hi = apply(densMat.gauss.swkanto,1,quantile,0.975),
+                                       mean = apply(densMat.gauss.swkanto,1,mean))
+densSummary.gauss.chubukochi = data.frame(CalBP=8000:3000,
+                                          lo=apply(densMat.gauss.chubukochi,1,quantile,0.025),
+                                          hi = apply(densMat.gauss.chubukochi,1,quantile,0.975),
+                                          mean = apply(densMat.gauss.chubukochi,1,mean))
+densSummary.gauss = data.frame(CalBP=8000:3000,
+                               lo=apply(densMat.gauss,1,quantile,0.025),
+                               hi = apply(densMat.gauss,1,quantile,0.975),
+                               mean = apply(densMat.gauss,1,mean))
+
+densSummary.unif.swkanto = data.frame(CalBP=8000:3000,
+                                      lo=apply(densMat.unif.swkanto,1,quantile,0.025),
+                                      hi = apply(densMat.unif.swkanto,1,quantile,0.975),
+                                      mean = apply(densMat.unif.swkanto,1,mean))
+densSummary.unif.chubukochi = data.frame(CalBP=8000:3000,
+                                         lo=apply(densMat.unif.chubukochi,1,quantile,0.025),
+                                         hi = apply(densMat.unif.chubukochi,1,quantile,0.975),
+                                         mean = apply(densMat.unif.chubukochi,1,mean))
+densSummary.unif = data.frame(CalBP=8000:3000,
+                              lo=apply(densMat.unif,1,quantile,0.025),
+                              hi = apply(densMat.unif,1,quantile,0.975),
+                              mean = apply(densMat.unif,1,mean))
+
+save(tbs,tbs2,tblocks.trap,tblocks.gauss,tblocks.unif,densSummary.trap.swkanto,densSummary.trap.swkanto,densSummary.unif.swkanto,densSummary.trap.chubukochi,densSummary.gauss.chubukochi,densSummary.unif.chubukochi,file="./R_images/simdatesPithouses.RData")
+
+
+
+
 
 
 ## SPD Analysis ####
