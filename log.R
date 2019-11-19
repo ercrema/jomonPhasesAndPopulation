@@ -208,7 +208,7 @@ densSummary.unif = data.frame(CalBP=8000:3000,
                               hi = apply(densMat.unif,1,quantile,0.975),
                               mean = apply(densMat.unif,1,mean))
 
-save(tbs,tbs2,tblocks.trap,tblocks.gauss,tblocks.unif,densSummary.trap.swkanto,densSummary.trap.swkanto,densSummary.unif.swkanto,densSummary.trap.chubukochi,densSummary.gauss.chubukochi,densSummary.unif.chubukochi,file="./R_images/simdatesPithouses.RData")
+save(tbs,tbs2,tblocks.trap,tblocks.gauss,tblocks.unif,densSummary.trap.swkanto,densSummary.trap.swkanto,densSummary.unif.swkanto,densSummary.trap.chubukochi,densSummary.gauss.chubukochi,densSummary.unif.chubukochi,densSummary.gauss,densSummary.unif,densSummary.trap,file="./R_images/simdatesPithouses.RData")
 
 
 
@@ -220,32 +220,24 @@ tbs = seq(7950,3050,-100)
 tbs2 = seq(8000,3000,-100)
 
 #Load C14 data image (generate by running the script in bindC14csv.R)
-load("./R_images/westKantoNaganoC14.RData")
-westKantoNaganoCal = calibrate(westKantoNaganoC14$CRA,westKantoNaganoC14$Error,normalise=FALSE) #calibrate
-westKantoNaganoBin = binPrep(westKantoNaganoC14$SiteID,westKantoNaganoC14$CRA,h=200) #bin (200 years)
-westKantoNaganoSPD = spd(westKantoNaganoCal,timeRange=c(8000,3000)) #generate SPD
-westKantoNaganoSPD_blocks = spd2rc(westKantoNaganoSPD,breaks=seq(8000,3000,-100)) #aggregate by 100yrs blocks
-westKantoNaganoSPD_sampled = sampleDates(x = westKantoNaganoCal,bins = westKantoNaganoBin,nsim = 1000) #sample random dates
+load("./R_images/spdDataC14.RData")
+spdDataCal = calibrate(spdDataC14$CRA,spdDataC14$Error,normalise=FALSE) #calibrate
+spdDataBin = binPrep(spdDataC14$SiteID,spdDataC14$CRA,h=200) #bin (200 years)
+spdDataSPD = spd(spdDataCal,timeRange=c(8000,3000)) #generate SPD
+spdDataSPD_blocks = spd2rc(spdDataSPD,breaks=seq(8000,3000,-100)) #aggregate by 100yrs blocks
+spdDataSPD_sampled = sampleDates(x = spdDataCal,bins = spdDataBin,nsim = nsim) #sample random dates
 
 tblocksCal =matrix(NA,nrow=length(tbs),ncol=nsim)
 
 for (s in 1:nsim)
 {
-  tblocksCal[,s]=as.numeric(rev(table(cut(t(westKantoNaganoSPD_sampled$sdates)[,s],breaks=tbs2))))
+  tblocksCal[,s]=as.numeric(rev(table(cut(t(spdDataSPD_sampled$sdates)[,s],breaks=tbs2))))
 }
 
-
-# Comparing to pithouse dynamics
-ckdeMean = apply(densMat.trap,1,mean)
-customModel = data.frame(calBP=8000:3000,PrDens=ckdeMean/sum(ckdeMean))
-
-res.compare=modelTest(x=westKantoNaganoCal,bins = westKantoNaganoBin,errors = westKantoNaganoC14$Error, timeRange=c(8000,3000), changexpr=expression(100*((t1/t0)^(1/d) - 1)),model='custom',predgrid=customModel,nsim=1000,backsight=100,spdnormalised=TRUE,runm=100)
-
-
 #save image file
-save(westKantoNaganoCal,westKantoNaganoBin,westKantoNaganoSPD,westKantoNaganoSPD_blocks,westKantoNaganoSPD_sampled,tblocksCal,res.compare,file="./R_images/spdRes.RData")
+save(spdDataCal,spdDataBin,spdDataSPD,spdDataSPD_blocks,spdDataSPD_sampled,tblocksCal,file="./R_images/spdRes.RData")
 
-## Correlation Analysis ####
+## Comparative Analysis ####
 
 ## compute rolling correlation over 10 blocks (1,000 years)
 tblockRoll10.trap = rollCor(tblocks.trap,tblocksCal,rollsize = 10) 
@@ -263,8 +255,19 @@ for (s in 1:nsim)
 
 round(quantile(overallCorr.trap,c(0.025,0.5,0.975)),2)
 
+
+# Comparing to pithouse dynamics
+customModel = data.frame(calBP=8000:3000,PrDens=densSummary.trap$mean/sum(densSummary.trap$mean))
+
+res.compare=modelTest(x=spdDataCal,bins = spdDataBin,errors = spdDataC14$Error, timeRange=c(8000,3000), changexpr=expression(100*((t1/t0)^(1/d) - 1)),model='custom',predgrid=customModel,nsim=1000,backsight=100,spdnormalised=TRUE,runm=100)
+
+
 ## Save output in R image file
-save(tblockRoll10.trap,tblockRoll10.gauss,tblockRoll10.unif,overallCorr.trap,overallCorr.gauss,overallCorr.unif,file="./R_images/corr.RData")
+save(tblockRoll10.trap,tblockRoll10.gauss,tblockRoll10.unif,overallCorr.trap,overallCorr.gauss,overallCorr.unif,res.compare,file="./R_images/comp.RData")
+
+
+
+
 
 ## Compute Annual % Growth Rate ####
 # Compute between 5700-5600 and 5100-5000
