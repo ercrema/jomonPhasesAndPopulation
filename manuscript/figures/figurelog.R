@@ -2,6 +2,7 @@
 
 # Load MCMC Posterior Samples 
 load("../../R_images/posteriorSamples.RData")
+phases =c("S0","S1.1","S1.2","S2.1","S2.2",paste0("S",3:8),paste0("Z",1:7),"C1","C234","C56","C78",paste0("C",9:14),paste0("K",1:8),paste0("B",1:6))
 
 pdf(file = "./figure1.pdf",width = 7,height = 9)
 plot(0,0,xlim=c(18000,2000),ylim=c(0,length(phases)+1),type='n', ylab="",xlab="",axes=F)
