@@ -1,0 +1,232 @@
+---
+title: "Electronic Supplementary Material for the paper 'Bayesian phase models, residential frequency data, and multi-proxy inferences of Jomon population dynamics'"
+author: "E.Crema"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(rcarbon)
+library(trapezoid)
+```
+
+# Setup and Introduction
+
+This pdf document was rendered from an R markdown document in order to ensure full reproducibility. Readers interested in accessing the source file and associated data can download the entire repository from [github]() or zenodo <!-- add zenodo link-->. Notice that the entire workflow requires long processing time (i.e. > 24 hours) and the use of external software (i.e. OxCal), hence major analysis were pre-processed (see the `log.R` file in the repository) and stored into a series of R images. For further information please read the `README.md` document in the repository.
+
+
+# ESM Table 1. Agreement Indices
+
+# Using different ceramic phase models
+
+## ESM Figure 1. Posterior Distribution of Gaussian Model
+
+```{r,echo=FALSE,fig.width=7,fig.height=9}
+load("./R_images/posteriorSamples.RData")
+phases =c("S0","S1.1","S1.2","S2.1","S2.2",paste0("S",3:8),paste0("Z",1:7),"C1","C234","C56","C78",paste0("C",9:14),paste0("K",1:8),paste0("B",1:6))
+
+plot(0,0,xlim=c(18000,2000),ylim=c(0,length(phases)+1),type='n', ylab="",xlab="",axes=F)
+axis(1,at=seq(18000,2000,-1000),labels=seq(18000,2000,-1000)/1000,tck=-0.01,padj=-1,cex=0.7)
+axis(3,at=seq(18000,2000,-1000),labels=seq(18000,2000,-1000)/1000,tck=-0.01,padj=1,cex=0.7)
+axis(1,at=seq(18000,2000,-500),labels=NA,tck=-0.005)
+axis(3,at=seq(18000,2000,-500),labels=NA,tck=-0.005)
+mtext(1,line=2,text = 'k cal BP')
+mtext(3,line=2,text = 'k cal BP')
+
+n=length(18000:2000)
+#axis(2,at=1:length(phases)+0.5,labels=phases,las=2,cex.axis=0.8,tck=-0.01,hadj=0.55)
+abline(v=seq(18000,2000,-1000),lty=3,lwd=1.5,col="lightgrey")
+abline(v=seq(18000,2000,-500),lty=3,lwd=0.5,col="lightgrey")
+
+#abline(h=1:length(phases),lty=4,col="lightgrey")
+
+for (k in 1:length(phases))
+{
+  
+  dens1 = density(BCADtoBP(postGaussian$posterior[k,1,]-postGaussian$posterior[k,2,]*2))
+  dens1.x = dens1$x
+  dens1.y = reScale(dens1$y)+k
+  
+  dens2 = density(BCADtoBP(postGaussian$posterior[k,1,]+postGaussian$posterior[k,2,]*2))
+  dens2.x = dens2$x
+  dens2.y = reScale(dens2$y)+k
+  
+  
+  polygon(c(dens1.x,rev(dens1.x)),c(dens1.y,rep(k,length(dens1.y))),col='darkgrey',border=NA)
+  polygon(c(dens2.x,rev(dens2.x)),c(dens2.y,rep(k,length(dens2.y))),col='darkgrey',border=NA)
+
+  text(x=median(BCADtoBP(postTrapezoid$posterior[k,1,]))+700,y=0.5+k,phases[k],cex=0.8)
+}
+
+```
+
+## ESM Figure 2. Posterior Distribution of Uniform Model
+
+```{r,echo=FALSE,fig.width=7,fig.height=9}
+load("./R_images/posteriorSamples.RData")
+phases =c("S0","S1.1","S1.2","S2.1","S2.2",paste0("S",3:8),paste0("Z",1:7),"C1","C234","C56","C78",paste0("C",9:14),paste0("K",1:8),paste0("B",1:6))
+
+plot(0,0,xlim=c(18000,2000),ylim=c(0,length(phases)+1),type='n', ylab="",xlab="",axes=F)
+axis(1,at=seq(18000,2000,-1000),labels=seq(18000,2000,-1000)/1000,tck=-0.01,padj=-1,cex=0.7)
+axis(3,at=seq(18000,2000,-1000),labels=seq(18000,2000,-1000)/1000,tck=-0.01,padj=1,cex=0.7)
+axis(1,at=seq(18000,2000,-500),labels=NA,tck=-0.005)
+axis(3,at=seq(18000,2000,-500),labels=NA,tck=-0.005)
+mtext(1,line=2,text = 'k cal BP')
+mtext(3,line=2,text = 'k cal BP')
+
+n=length(18000:2000)
+#axis(2,at=1:length(phases)+0.5,labels=phases,las=2,cex.axis=0.8,tck=-0.01,hadj=0.55)
+abline(v=seq(18000,2000,-1000),lty=3,lwd=1.5,col="lightgrey")
+abline(v=seq(18000,2000,-500),lty=3,lwd=0.5,col="lightgrey")
+
+#abline(h=1:length(phases),lty=4,col="lightgrey")
+
+for (k in 1:length(phases))
+{
+  
+  dens1 = density(BCADtoBP(postUniform$posterior[k,1,]))
+  dens1.x = dens1$x
+  dens1.y = reScale(dens1$y)+k
+  
+  dens2 = density(BCADtoBP(postUniform$posterior[k,2,]))
+  dens2.x = dens2$x
+  dens2.y = reScale(dens2$y)+k
+  
+  
+  polygon(c(dens1.x,rev(dens1.x)),c(dens1.y,rep(k,length(dens1.y))),col='darkgrey',border=NA)
+  polygon(c(dens2.x,rev(dens2.x)),c(dens2.y,rep(k,length(dens2.y))),col='darkgrey',border=NA)
+
+  text(x=median(BCADtoBP(postUniform$posterior[k,1,]))+700,y=0.5+k,phases[k],cex=0.8)
+}
+
+```
+
+## ESM Figure 3. Comparison of Mean Posterior Parameters
+
+```{r,echo=FALSE,fig.width=7,fig.height=9}
+load("./R_images/posteriorSamples.RData")
+phases =c("S0","S1.1","S1.2","S2.1","S2.2",paste0("S",3:8),paste0("Z",1:7),"C1","C234","C56","C78",paste0("C",9:14),paste0("K",1:8),paste0("B",1:6))
+col = RColorBrewer::brewer.pal(n=3,"Set2")
+
+sd.avg=apply(postGaussian$posterior,c(1,2),median)[,2]
+mean.avg=BCADtoBP(apply(postGaussian$posterior,c(1,2),median)[,1])
+
+alpha.avg = BCADtoBP(apply(postUniform$posterior,c(1,2),median)[,1])
+beta.avg = BCADtoBP(apply(postUniform$posterior,c(1,2),median)[,2])
+
+a.avg = BCADtoBP(apply(postTrapezoid$posterior,c(1,2),median)[,1])
+b.avg = BCADtoBP(apply(postTrapezoid$posterior,c(1,2),median)[,2])
+c.avg = BCADtoBP(apply(postTrapezoid$posterior,c(1,2),median)[,3])
+d.avg = BCADtoBP(apply(postTrapezoid$posterior,c(1,2),median)[,4])
+  
+
+plot(0,0,xlim=c(18000,2000),ylim=c(0,length(phases)+1),type='n', ylab="",xlab="",axes=F)
+axis(1,at=seq(18000,2000,-1000),labels=seq(18000,2000,-1000)/1000,tck=-0.01,padj=-1,cex=0.7)
+axis(3,at=seq(18000,2000,-1000),labels=seq(18000,2000,-1000)/1000,tck=-0.01,padj=1,cex=0.7)
+axis(1,at=seq(18000,2000,-500),labels=NA,tck=-0.005)
+axis(3,at=seq(18000,2000,-500),labels=NA,tck=-0.005)
+mtext(1,line=2,text = 'k cal BP')
+mtext(3,line=2,text = 'k cal BP')
+
+n=length(18000:2000)
+#axis(2,at=1:length(phases)+0.5,labels=phases,las=2,cex.axis=0.8,tck=-0.01,hadj=0.55)
+abline(v=seq(18000,2000,-1000),lty=3,lwd=1.5,col="lightgrey")
+abline(v=seq(18000,2000,-500),lty=3,lwd=0.5,col="lightgrey")
+
+#abline(h=1:length(phases),lty=4,col="lightgrey")
+
+for (k in 1:length(phases))
+{
+  d0a = dnorm(18000:2000,mean=mean.avg[k],sd=sd.avg[k]) 
+  d0b = dunif(18000:2000,max=alpha.avg[k],min=beta.avg[k])
+  d0c = dtrapezoid(seq(18,2,-0.001),min=d.avg[k]/1000,mode1 = c.avg[k]/1000,mode2=b.avg[k]/1000,max=a.avg[k]/1000) 
+  
+  d0aRR = c(which(d0a>0.00001)[1],which(d0a>0.000001)[length(which(d0a>0.00001))])
+  d0bRR =c(which(d0b>0)[1]-1,which(d0b>0)[length(which(d0b>0))]+1)
+  d0cRR =c(which(d0c>0)[1]-1,which(d0c>0)[length(which(d0c>0))]+1)
+  
+  lines(c(18000:2000)[d0aRR[1]:d0aRR[2]],reScale(d0a)[d0aRR[1]:d0aRR[2]]+k,col=col[1],lwd=1)
+  lines(c(18000:2000)[d0bRR[1]:d0bRR[2]],reScale(d0b)[d0bRR[1]:d0bRR[2]]+k,col=col[2],lwd=1)
+  lines(c(18000:2000)[d0cRR[1]:d0cRR[2]],reScale(d0c)[d0cRR[1]:d0cRR[2]]+k,col=col[3],lwd=1)
+  
+  text(x=median(BCADtoBP(postUniform$posterior[k,1,]))+800,y=0.5+k,phases[k],cex=0.8)
+}
+
+legend("topleft",legend=c("Trapezoid","Gaussian","Uniform"),col=col[c(3,1,2)],lwd=2,bg='white')
+
+
+
+```
+
+
+
+
+## ESM Figure 4. Comparison of pithouse KDE with ceramic phases based on Trapezoid, Gaussian, and Uniform Models
+
+```{r,fig.width=6,fig.height=8,echo=FALSE}
+load("./R_images/simdatesPithouses.RData")
+par(mfcol=c(3,2),mar=c(5,4,1,1))
+
+plot(0,0,xlim=c(8000,3000),ylim=c(0,0.002),xlab="Cal BP",ylab="Probability Density")
+polygon(x=c(densSummary.trap.swkanto$CalBP,rev(densSummary.trap.swkanto$CalBP)),y=c(densSummary.trap.swkanto$lo,rev(densSummary.trap.swkanto$hi)),col=rgb(0,0,0,0.2),border=NA)
+lines(densSummary.trap.swkanto$CalBP,densSummary.trap.swkanto$mean)
+text(x=7000,y=0.0015,"Trapezoid")
+text(x=7000,y=0.0013,"SW Kanto")
+
+plot(0,0,xlim=c(8000,3000),ylim=c(0,0.002),xlab="Cal BP",ylab="Probability Density")
+polygon(x=c(densSummary.gauss.swkanto$CalBP,rev(densSummary.gauss.swkanto$CalBP)),y=c(densSummary.gauss.swkanto$lo,rev(densSummary.gauss.swkanto$hi)),col=rgb(0,0,0,0.2),border=NA)
+lines(densSummary.gauss.swkanto$CalBP,densSummary.gauss.swkanto$mean)
+text(x=7000,y=0.0015,"Gaussian")
+text(x=7000,y=0.0013,"SW Kanto")
+
+plot(0,0,xlim=c(8000,3000),ylim=c(0,0.002),xlab="Cal BP",ylab="Probability Density")
+polygon(x=c(densSummary.unif.swkanto$CalBP,rev(densSummary.unif.swkanto$CalBP)),y=c(densSummary.unif.swkanto$lo,rev(densSummary.unif.swkanto$hi)),col=rgb(0,0,0,0.2),border=NA)
+lines(densSummary.unif.swkanto$CalBP,densSummary.unif.swkanto$mean)
+text(x=7000,y=0.0015,"Uniform")
+text(x=7000,y=0.0013,"SW Kanto")
+
+
+plot(0,0,xlim=c(8000,3000),ylim=c(0,0.002),xlab="Cal BP",ylab="Probability Density")
+polygon(x=c(densSummary.trap.chubukochi$CalBP,rev(densSummary.trap.chubukochi$CalBP)),y=c(densSummary.trap.chubukochi$lo,rev(densSummary.trap.chubukochi$hi)),col=rgb(0,0,0,0.2),border=NA)
+lines(densSummary.trap.chubukochi$CalBP,densSummary.trap.chubukochi$mean)
+text(x=7000,y=0.0015,"Trapezoid")
+text(x=7000,y=0.0013,"Chubu Highlands")
+
+plot(0,0,xlim=c(8000,3000),ylim=c(0,0.002),xlab="Cal BP",ylab="Probability Density")
+polygon(x=c(densSummary.gauss.chubukochi$CalBP,rev(densSummary.gauss.chubukochi$CalBP)),y=c(densSummary.gauss.chubukochi$lo,rev(densSummary.gauss.chubukochi$hi)),col=rgb(0,0,0,0.2),border=NA)
+lines(densSummary.gauss.chubukochi$CalBP,densSummary.gauss.chubukochi$mean)
+text(x=7000,y=0.0015,"Gaussian")
+text(x=7000,y=0.0013,"Chubu Highlands")
+
+plot(0,0,xlim=c(8000,3000),ylim=c(0,0.002),xlab="Cal BP",ylab="Probability Density")
+polygon(x=c(densSummary.unif.chubukochi$CalBP,rev(densSummary.unif.chubukochi$CalBP)),y=c(densSummary.unif.chubukochi$lo,rev(densSummary.unif.chubukochi$hi)),col=rgb(0,0,0,0.2),border=NA)
+lines(densSummary.unif.chubukochi$CalBP,densSummary.unif.chubukochi$mean)
+text(x=7000,y=0.0015,"Uniform")
+text(x=7000,y=0.0013,"Chubu Highlands")
+```
+
+
+# ESM Figure 5: Bin-Sensitivty Analysis
+
+```{r,echo=FALSE,fig.height=5,fig.width=6.5}
+library(rcarbon)
+load("./R_images/spdC14.RData")
+load("./R_images/spdRes.RData")
+binsense(x = spdDataCal,y=spdDataC14$SiteID, h = seq(0,200,20),timeRange = c(8000,3000),verbose=FALSE,runm=100)
+```
+
+# ESM Figure 6: Comparison against custom-growth model based on pithouse frequencies
+
+```{r,fig.width=6,fig.height=5,echo=FALSE}
+load("./R_images/comp.RData")
+library(rcarbon)
+plot(res.compare,type='roc',xlim=c(7500,3500),ylim=c(-1,2),drawaxes = FALSE)
+axis(side=1,at=seq(8000,2500,-1000),labels=seq(8000,2500,-1000),tck=-0.03,padj=-0.6)
+axis(side=1,at=seq(8000,2500,-500),labels=NA,tck=-0.02)
+axis(side=1,at=seq(8000,2500,-100),labels=NA,tck=-0.01)
+axis(side=2)
+mtext(2,line=3,text = 'Annual Growth Rate (%)')
+mtext(1,line=2,text = 'cal BP')
+box()
+legend("topleft",legend=c("Expectation from Pithouse Data","Positive Deviation","Negative Deviation"),bg="white",cex=0.8,fill=c("lightgrey",rgb(0.7,0,0.0,0.3),rgb(0,0,0.7,0.3)))
+```
