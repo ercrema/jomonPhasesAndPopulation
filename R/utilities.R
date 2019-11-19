@@ -68,7 +68,6 @@ convertToArray= function(x,type,phases)
       res[i,1,]=x[,st]
       res[i,2,]=x[,en]
     }
-    
   }
   if (type=="gaussian")
   {
@@ -92,10 +91,11 @@ convertToArray= function(x,type,phases)
       c=which(colnames(x)==paste0("Start.of.End.",phases[i]))
       d=which(colnames(x)==paste0("End.of.End.",phases[i]))
       
-      res[i,1,]=x[,a]
-      res[i,2,]=x[,b]
-      res[i,3,]=x[,c]
-      res[i,4,]=x[,d]
+      #Add/remove 1/3 to avoid synchrony 
+      res[i,1,]=x[,a] - 2/3
+      res[i,2,]=x[,b] - 1/3
+      res[i,3,]=x[,c] + 1/3
+      res[i,4,]=x[,d] + 2/3
     }
   }
   return(list(posterior=res,type=type))
