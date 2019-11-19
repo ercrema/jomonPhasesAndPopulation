@@ -27,6 +27,6 @@ for (i in 1:length(pthlist))
 res=lapply(res,orgTable) #orgTable converts aggregated counts into a data.frame with 1 house per row
 pithouseData=rbind.data.frame(res[[1]],res[[2]],res[[3]],res[[4]],res[[5]]) #combine to a single data.frame
 pithouseData$Region = "SWKanto"
-pithouseData$Region[which(pithouseData$pref%in%c("Yamanashi","Nagano"))]="ChubuHighlands"
+pithouseData$Region[which(pithouseData$Prefecture%in%c("Yamanashi","Nagano"))]="ChubuHighlands"
 # save data into an R image
 save(pithouseData,file="../../R_images/pithouseData.RData")
