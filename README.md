@@ -10,98 +10,24 @@ All raw data can be found in the [data](./data) directory. The file [c14dates.cs
 
 ## Bayesian ceramic phase modelling
 
-This stage of the analysis (recorded in the [log.R](./log.R) file) involves the use of [OxCal](https://c14.arch.ox.ac.uk/oxcal/OxCal.html). The process is carried out in three steps. Firstly, potential outliers are detected within each set of dates associated with the same event (e.g. different organic residues from the same vessel). This is achievied by using the `outlierExcluder()` function (stored [here](./R/outlierAnalysis.R)) which internally calls OxCal from R using the [oxcAAR](https://CRAN.R-project.org/package=oxcAAR) package. The function eliminates potential outliers from our initial sets. The result of this routine is stored in the R image file [c14data.RData](./R_images/c14data.RData). 
+This stage of the analysis (recorded in the [log.R](./log.R) file) involved the use of [OxCal](https://c14.arch.ox.ac.uk/oxcal/OxCal.html). The process was carried out in three steps. Firstly, potential outliers were detected within each set of dates associated with the same event (e.g. different organic residues from the same vessel). This was achievied by using the `outlierExcluder()` function (stored [here](./R/outlierAnalysis.R)) which internally calls OxCal from R using the [oxcAAR](https://CRAN.R-project.org/package=oxcAAR) package. The function eliminates potential outliers from our initial sets. The result of this routine is stored in the R image file [c14data.RData](./R_images/c14data.RData). 
 
-The second step of analysis consisted in creating OxCal scripts for different probability distributions emulating putative _within-phase uncertainty_. This is achieved by using the `oxcalScriptGen()` function (located [in this file](./R/oxcalScriptCreator.R), which generates the OxCal scripts from the provided dates. The script (stored in the directory [./oxcal/oxcalscripts](./oxcal/oxcalscripts)) can then be loaded into OxCal for analyses. The results are stored in the directory [./oxcal/results](./oxcal/results), and include the .csv storing the posterior samples and a JavaScript file (.js) containing key statistics such as individual and overall agreement indices that can be read using the `oxcalReadjs()` function (see source code [here](./R/oxcalReadjs.R)). 
+The second step of analysis consisted in creating OxCal scripts for different probability distributions emulating putative _within-phase uncertainty_. This was achieved by using the `oxcalScriptGen()` function (located [in this file](./R/oxcalScriptCreator.R), which generates the OxCal scripts from the provided dates. The script (stored in the directory [./oxcal/oxcalscripts](./oxcal/oxcalscripts)) can then be loaded into OxCal for analyses. The results are stored in the directory [./oxcal/results](./oxcal/results), and include the .csv storing the posterior samples and a JavaScript file (.js) containing key statistics such as individual and overall agreement indices that can be read using the `oxcalReadjs()` function (see source code [here](./R/oxcalReadjs.R)). 
 
 The third and final step consist of removing samples with low agreement index for each of the probability distributions and generate a new set of OxCal scripts (with suffix "R" to distinguish this second submission to OxCal, e.g. `gaussian.oxcal` and `gaussianR.oxcal`). The result of the OxCal analysis is then processed and the posterior samples organised into a series of objects stored in the R image [posteriorSamples.RData](./R_images/posteriorSamples.RData).
 
 ## Monte-Carlo Simulation of Pithouse Dates
 
-Dates of individual pithouse are simulated `n` times taking account: 1) the uncertatinty within the phase ( _within phase uncertainty_ ); 2) the uncertainty in defining the membership of the pithouse to a particular phase ( _phase assignement uncertainty_ ); and the uncertainty associated with the parameters of the probability distribution describing the _within phase uncertainty_  (i.e. the _phase boundary uncertainty_). The function `mcsim()` (see source code [here](./R/mcsim.R)) takes into account all three forms o uncertainty and generates `n` sets of pithouse with randomly sampled absolute calendar dates. The R image fle [simdatesPithouses.RData](./R/simdatesPithouses.RData) contains the simulated dates, along with counts organised in 100 years bins (between 8,000 and 3,000 cal BP), and the result of a composite kernel density estimate (details of the steps are in [log.R](./log.R) file).   
+Dates of individual pithouse were simulated `n` times taking account: 1) the uncertatinty within the phase ( _within phase uncertainty_ ); 2) the uncertainty in defining the membership of the pithouse to a particular phase ( _phase assignement uncertainty_ ); and the uncertainty associated with the parameters of the probability distribution describing the _within phase uncertainty_  (i.e. the _phase boundary uncertainty_). The function `mcsim()` (see source code [here](./R/mcsim.R)) takes into account all three forms o uncertainty and generates `n` sets of pithouse with randomly sampled absolute calendar dates. The R image fle [simdatesPithouses.RData](./R/simdatesPithouses.RData) contains the simulated dates, along with counts organised in 100 years bins (between 8,000 and 3,000 cal BP), and the result of a composite kernel density estimate (details of the steps are in [log.R](./log.R) file).   
 
 ## SPD Analysis
 
+Summed probability distribution (SPD) of radiocarbon dates have been generated using [rcarbon](https://CRAN.R-project.org/package=rcarbon) <!-- specify whether this 1.2 or 1.3 depending on the radiocarbon paper -->. To enable correlation analyses a matrix of 5000 sets of randomly sampled calendar dates was created and aggregated by 100 years intervals between 8,000 and 3,000 cal BP. All outputshave been stored in the R image [./R_images/spdRes.RData](./R_images/spdRes.RData).  
+
+
 ## Comparisons between pithouse data and radiocarbon density
 
-
-# File Structure
-
-```
-./
-├── data #Data Folder
-│   ├── c14dates.csv #Radiocarbon dates for OxCal Model
-│   ├── rekihaku14C #Radiocarbon dates for SPD analysis
-│   │   ├── bindC14csv.R #Binder function for downloaded radiocarbon dates
-│   │   ├── kanagawa_T_B_5_11_2019.csv #Radiocarbon dates from Kanagawa
-│   │   ├── nagano_T_B_5_11_2019.csv #Radiocarbon dates from Nagano
-│   │   ├── saitama_T_B_5_11_2019.csv #Radiocarbon dates from Saitama
-│   │   ├── tokyo_T_B_5_11_2019.csv #Radiocarbon dates from Tokyo
-│   │   └── yamanashi_T_B_5_11_2019.csv #Radiocarbon dates from Yamanashi
-│   └── suzuki #Suzuki's Pithouse dataset
-│       ├── conversion.csv #Baseline crossreference of ceramic phases 
-│       ├── kanagawa.csv #Pithouse counts for Kanagwa
-│       ├── nagano.csv #Pithouse counts for Nagano
-│       ├── saitama.csv #Pithouse counts for Saitama
-│       ├── tokyo.csv #Pithouse counts for Tokyo
-│       └── yamanashi.csv #Pithouse counts for Yamanashi
-├── log.R #Core Log file
-├── manuscript #Manuscript Related Files
-│   ├── figures
-│   │   ├── figure1.pdf
-│   │   ├── figure2.pdf
-│   │   └── figurelog.R #R function for generating figures
-│   └── tables 
-│       └── table1_base.csv
-├── oxcal
-│   ├── oxcalscripts #OxCal submission scripts. *R.oxcal are resubmissions.
-│   │   ├── gaussian.oxcal
-│   │   ├── gaussianR.oxcal
-│   │   ├── trapezoid.oxcal
-│   │   ├── trapezoidR.oxcal
-│   │   ├── uniform.oxcal
-│   │   └── uniformR.oxcal
-│   └── results #OxCal Output Files. mcmc*.csv are posterior samples.
-│       ├── gaussian.js
-│       ├── gaussian.log
-│       ├── gaussian.oxcal
-│       ├── gaussianR.js
-│       ├── gaussianR.log
-│       ├── gaussianR.oxcal
-│       ├── gaussianR.txt
-│       ├── gaussian.txt
-│       ├── mcmcGaussian.csv
-│       ├── mcmcGaussianR.csv
-│       ├── mcmcTrapezoid.csv
-│       ├── mcmcTrapezoidR.csv
-│       ├── mcmcUniform.csv
-│       ├── trapezoid.js
-│       ├── trapezoid.log
-│       ├── trapezoid.oxcal
-│       ├── trapezoidR.js
-│       ├── trapezoidR.log
-│       ├── trapezoidR.oxcal
-│       ├── trapezoidR.txt
-│       ├── trapezoid.txt
-│       ├── uniform.js
-│       ├── uniform.log
-│       ├── uniform.oxcal
-│       └── uniform.txt
-├── R #R scripts
-│   ├── mcsim.R #Monte Carlo simulation routine
-│   ├── outlierAnalysis.R #Functions for outlier analysis
-│   ├── oxcalReadjs.R #Functions for reading oxcal *.js files
-│   ├── oxcalScriptCreator.R #Functions for generating oxcal submission scripts
-│   └── utilities.R #Variety of utility functions
-├── README.md # This file
-├── R_images #R image files
-    ├── c14data.RData #C14 data for oxcal analysis
-    ├── pithouseData.RData #Re-structured pithouse data
-    ├── posteriorSamples.RData #Posterior samples from OxCal model
-    ├── simdatesPithouses.RData #Simulated dates for Suzuki's pithouses
-    ├── spdRes.RData #SPD analysis
-    └── westKantoNaganoC14.RData #C14 data for SPD analysis
-```
+The time-series of residential and radiocarbon density have been compared via correlation analyses and the `modelTest()` function in [rcarbon](https://CRAN.R-project.org/package=rcarbon). The former was carried out by generating 5,000 correlation values by iteratively comparing the the time-series of simulated pithouse dates and randomly sampled calendar dates from the calibrated radiocarbon dates. The latter compared the observed annual growth rate in the SPD against an expectation derived from the average trend obtained from the composite kernel density estimate of pithouse frequencies over time. The results of these analyses are stored in the R image [./R_images/comp.RData](./R_images/comp.RData).
 
 # R Package Used
 
@@ -115,5 +41,7 @@ Dates of individual pithouse are simulated `n` times taking account: 1) the unce
 * trapezoid_2.0-0
 
 # Funding
+This research was funded by the ERC grant _Demography, Cultural Change, and the Diffusion of Rice and Millets during the Jomon-Yayoi transition in prehistoric Japan (ENCOUNTER)_ (Project N. 801953, PI: Enrico Crema). 
 
 # Licence
+CC-BY 3.0
