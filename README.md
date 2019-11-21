@@ -29,6 +29,92 @@ Summed probability distribution (SPD) of radiocarbon dates have been generated u
 
 The time-series of residential and radiocarbon density have been compared via correlation analyses and the `modelTest()` function in [rcarbon](https://CRAN.R-project.org/package=rcarbon). The former was carried out by generating 5,000 correlation values by iteratively comparing the the time-series of simulated pithouse dates and randomly sampled calendar dates from the calibrated radiocarbon dates. The latter compared the observed annual growth rate in the SPD against an expectation derived from the average trend obtained from the composite kernel density estimate of pithouse frequencies over time. The results of these analyses are stored in the R image [./R_images/comp.RData](./R_images/comp.RData).
 
+# File Structure
+```
+.
+├── data
+│   ├── c14dates.csv
+│   ├── rekihaku14C
+│   │   ├── bindC14csv.R
+│   │   ├── kanagawa_T_B_5_11_2019.csv
+│   │   ├── nagano_T_B_5_11_2019.csv
+│   │   ├── saitama_T_B_5_11_2019.csv
+│   │   ├── tokyo_T_B_5_11_2019.csv
+│   │   └── yamanashi_T_B_5_11_2019.csv
+│   └── suzuki
+│       ├── kanagawa.csv
+│       ├── nagano.csv
+│       ├── pithouseBinder.R
+│       ├── saitama.csv
+│       ├── tokyo.csv
+│       └── yamanashi.csv
+├── esm.pdf
+├── esm.Rmd
+├── log.R
+├── manuscript
+│   ├── figures
+│   │   ├── figure1.pdf
+│   │   ├── figure2.pdf
+│   │   ├── figure3.pdf
+│   │   └── figurelog.R
+│   └── tables
+│       └── table1_base.csv
+├── oxcal
+│   ├── oxcalscripts
+│   │   ├── gaussian.oxcal
+│   │   ├── gaussianR.oxcal
+│   │   ├── trapezoid.oxcal
+│   │   ├── trapezoidR.oxcal
+│   │   ├── uniform.oxcal
+│   │   └── uniformR.oxcal
+│   └── results
+│       ├── gaussian.js
+│       ├── gaussian.log
+│       ├── gaussian.oxcal
+│       ├── gaussianR.js
+│       ├── gaussianR.log
+│       ├── gaussianR.oxcal
+│       ├── gaussianR.txt
+│       ├── gaussian.txt
+│       ├── mcmcGaussian.csv
+│       ├── mcmcGaussianR.csv
+│       ├── mcmcTrapezoid.csv
+│       ├── mcmcTrapezoidR.csv
+│       ├── mcmcUniform.csv
+│       ├── mcmcUniformR.csv
+│       ├── trapezoid.js
+│       ├── trapezoid.log
+│       ├── trapezoid.oxcal
+│       ├── trapezoidR.js
+│       ├── trapezoidR.log
+│       ├── trapezoidR.oxcal
+│       ├── trapezoidR.txt
+│       ├── trapezoid.txt
+│       ├── uniform.js
+│       ├── uniform.log
+│       ├── uniform.oxcal
+│       ├── uniformR.js
+│       ├── uniformR.log
+│       ├── uniformR.oxcal
+│       ├── uniformR.txt
+│       └── uniform.txt
+├── R
+│   ├── mcsim.R
+│   ├── outlierAnalysis.R
+│   ├── oxcalReadjs.R
+│   ├── oxcalScriptCreator.R
+│   └── utilities.R
+├── README.md
+└── R_images
+    ├── c14data.RData
+    ├── comp.RData
+    ├── pithouseData.RData
+    ├── posteriorSamples.RData
+    ├── simdatesPithouses.RData
+    ├── spdC14.RData
+    └── spdRes.RData
+```
+
 # R Settings
 ```
 attached base packages:
