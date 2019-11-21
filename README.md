@@ -48,7 +48,6 @@ The time-series of residential and radiocarbon density have been compared via co
 │       ├── saitama.csv
 │       ├── tokyo.csv
 │       └── yamanashi.csv
-├── esm.pdf
 ├── esm.Rmd
 ├── log.R
 ├── manuscript
