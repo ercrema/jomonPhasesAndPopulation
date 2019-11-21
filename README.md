@@ -22,23 +22,45 @@ Dates of individual pithouse were simulated 5,000 times taking account: 1) the u
 
 ## SPD Analysis
 
-Summed probability distribution (SPD) of radiocarbon dates have been generated using [rcarbon](https://CRAN.R-project.org/package=rcarbon) <!-- specify whether this 1.2 or 1.3 depending on the radiocarbon paper -->. To enable correlation analyses a matrix of 5000 sets of randomly sampled calendar dates was created and aggregated by 100 years intervals between 8,000 and 3,000 cal BP. All outputshave been stored in the R image [./R_images/spdRes.RData](./R_images/spdRes.RData).  
+Summed probability distribution (SPD) of radiocarbon dates have been generated using [rcarbon](https://CRAN.R-project.org/package=rcarbon) <!-- specify whether this 1.2 or 1.3 depending on the radiocarbon paper -->. To enable correlation analyses with the residential data, a matrix of 5000 sets of randomly sampled calendar dates was created and aggregated by the same 100 years intervals between 8,000 and 3,000 cal BP. All SPD analysis related R objects are stored in the R image [./R_images/spdRes.RData](./R_images/spdRes.RData).  
 
 
 ## Comparisons between pithouse data and radiocarbon density
 
 The time-series of residential and radiocarbon density have been compared via correlation analyses and the `modelTest()` function in [rcarbon](https://CRAN.R-project.org/package=rcarbon). The former was carried out by generating 5,000 correlation values by iteratively comparing the the time-series of simulated pithouse dates and randomly sampled calendar dates from the calibrated radiocarbon dates. The latter compared the observed annual growth rate in the SPD against an expectation derived from the average trend obtained from the composite kernel density estimate of pithouse frequencies over time. The results of these analyses are stored in the R image [./R_images/comp.RData](./R_images/comp.RData).
 
-# R Package Used
+# R Settings
+```
+attached base packages:
+[1] stats     graphics  grDevices utils     methods   base     
 
-* trapezoid_2.0-0
-* oxcAAR_1.0.0
-* rcarbon_1.2.0
-* dplyr_0.8.3
-* readr_1.3.1
-* magrittr_1.5
-* TTR_0.23-5
-* trapezoid_2.0-0
+other attached packages:
+[1] readr_1.3.1     trapezoid_2.0-0 TTR_0.23-5      rcarbon_1.3.0  
+[5] oxcAAR_1.0.0    dplyr_0.8.3     magrittr_1.5    nvimcom_0.9-82 
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.2            pillar_1.4.2         
+ [3] compiler_3.6.1        xts_0.11-2           
+ [5] iterators_1.0.12      tools_3.6.1          
+ [7] rpart_4.1-15          goftest_1.1-1        
+ [9] jsonlite_1.6          tibble_2.1.3         
+[11] nlme_3.1-140          lattice_0.20-38      
+[13] mgcv_1.8-28           pkgconfig_2.0.3      
+[15] rlang_0.4.0           Matrix_1.2-17        
+[17] foreach_1.4.7         curl_4.2             
+[19] parallel_3.6.1        spatstat.data_1.4-0  
+[21] stringr_1.4.0         hms_0.4.2            
+[23] spatstat.utils_1.13-0 grid_3.6.1           
+[25] tidyselect_0.2.5      glue_1.3.1           
+[27] R6_2.4.0              sp_1.3-2             
+[29] polyclip_1.10-0       purrr_0.3.2          
+[31] deldir_0.1-23         tensor_1.5           
+[33] splines_3.6.1         codetools_0.2-16     
+[35] assertthat_0.2.1      abind_1.4-5          
+[37] spatstat_1.61-0       stringi_1.4.3        
+[39] doParallel_1.0.15     crayon_1.3.4         
+[41] zoo_1.8-6   
+```
 
 # Funding
 This research was funded by the ERC grant _Demography, Cultural Change, and the Diffusion of Rice and Millets during the Jomon-Yayoi transition in prehistoric Japan (ENCOUNTER)_ (Project N. 801953, PI: Enrico Crema). 
