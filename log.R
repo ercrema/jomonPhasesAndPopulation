@@ -270,15 +270,17 @@ save(tblockRoll10.trap,tblockRoll10.gauss,tblockRoll10.unif,overallCorr.trap,ove
 
 
 ## Compute Annual % Growth Rate ####
-# Compute between 5700-5600 and 5100-5000
-st = which(tbs==5650)
-en = which(tbs==5050)
+tbs = seq(7950,3050,-100)
+tbs2 = seq(8000,3000,-100)
+# Compute between 5500-5400 and 5100-5000
+st = which(tbs==5450)
+en = which(tbs==4950)
+gr.houses=100*((tblocks.trap[en,]/tblocks.trap[st,])^(1/500)-1)
+round(quantile(gr.houses,c(0.025,0.5,0.975)),2)
+gr.cal=100*((tblocksCal[en,]/tblocksCal[st,])^(1/500)-1)
+round(quantile(gr.cal,c(0.025,0.5,0.975)),2)
 
-gr.cal=100*((tblocksCal[en,]/tblocksCal[st,])^(1/600)-1)
-gr.houses=100*((tblocks.trap[en,]/tblocks.trap[st,])^(1/600)-1)
 
-quantile(gr.cal,c(0.025,0.5,0.975))
-quantile(gr.houses,c(0.025,0.5,0.975))
 
 
 
