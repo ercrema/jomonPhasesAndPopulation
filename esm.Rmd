@@ -14,9 +14,6 @@ library(trapezoid)
 
 This pdf document was rendered from an R markdown document in order to ensure full reproducibility. Readers interested in accessing the source file and associated data can download the entire repository from [github]() or zenodo <!-- add zenodo link-->. Notice that the entire workflow requires long processing time (i.e. > 24 hours) and the use of external software (i.e. OxCal), hence major analysis were pre-processed (see the `log.R` file in the repository) and stored into a series of R images. For further information please read the `README.md` document in the repository.
 
-
-# ESM Table 1. Agreement Indices
-
 # Using different ceramic phase models
 
 ## ESM Figure 1. Posterior Distribution of Gaussian Model
@@ -213,20 +210,4 @@ library(rcarbon)
 load("./R_images/spdC14.RData")
 load("./R_images/spdRes.RData")
 binsense(x = spdDataCal,y=spdDataC14$SiteID, h = seq(0,200,20),timeRange = c(8000,3000),verbose=FALSE,runm=100)
-```
-
-# ESM Figure 6: Comparison against custom-growth model based on pithouse frequencies
-
-```{r,fig.width=6,fig.height=5,echo=FALSE}
-load("./R_images/comp.RData")
-library(rcarbon)
-plot(res.compare,type='roc',xlim=c(7500,3500),ylim=c(-1,2),drawaxes = FALSE)
-axis(side=1,at=seq(8000,2500,-1000),labels=seq(8000,2500,-1000),tck=-0.03,padj=-0.6)
-axis(side=1,at=seq(8000,2500,-500),labels=NA,tck=-0.02)
-axis(side=1,at=seq(8000,2500,-100),labels=NA,tck=-0.01)
-axis(side=2)
-mtext(2,line=3,text = 'Annual Growth Rate (%)')
-mtext(1,line=2,text = 'cal BP')
-box()
-legend("topleft",legend=c("Expectation from Pithouse Data","Positive Deviation","Negative Deviation"),bg="white",cex=0.8,fill=c("lightgrey",rgb(0.7,0,0.0,0.3),rgb(0,0,0.7,0.3)))
 ```
