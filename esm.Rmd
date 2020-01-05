@@ -2,6 +2,7 @@
 title: "Electronic Supplementary Material for the paper 'A multi-proxy inference of Jōmon population dynamics using Bayesian phase models, residential data, and summed probability distribution of 14C dates'"
 author: "E.Crema"
 output: pdf_document
+header-includes: \usepackage{blindtext} \usepackage{color}
 ---
 
 ```{r setup, include=FALSE}
@@ -12,7 +13,7 @@ library(trapezoid)
 
 # Setup and Introduction
 
-This pdf document was rendered from an R markdown document in order to ensure full reproducibility. Readers interested in accessing the source file and associated data can download the entire repository from [github](https://github.com/ercrema/jomonPhasesAndPopulation) or [zenodo]() <!-- add zenodo link-->. Notice that the entire workflow requires long processing time (i.e. > 24 hours) and the use of external software (i.e. OxCal), hence major analysis were pre-processed (see the `log.R` file in the repository) and stored into a series of R images. For further information please read the `README.md` document in the repository.
+This pdf document was rendered from an R markdown document in order to ensure full reproducibility. Readers interested in accessing the source file and associated data can download the entire repository from \href{https://github.com/ercrema/jomonPhasesAndPopulation}{{\color{blue}{\underline{github}}}}. Notice that the entire workflow requires long processing time (i.e. > 24 hours) and the use of external software (i.e. OxCal), hence major analysis were pre-processed (see the `log.R` file in the repository) and stored into a series of R images. For further information please read the `README.md` document in the repository.
 
 # Using different ceramic phase models
 
