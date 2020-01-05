@@ -1,6 +1,6 @@
-# Bayesian phase models, residential frequency data, and multi-proxy inferences of Jomon population dynamics: source code, data, and scripts
+# A multi-proxy inference of Jōmon population dynamics using Bayesian phase models, residential data, and summed probability distribution of <sup>14</sup>C dates: source code, data, and scripts
 
-This repository contains all data and scripts required to fully reproduce all analyses presented in the paper _Bayesian phase models, residential frequency data, and multi-proxy inferences of Jomon population dynamics_ authored by Crema, E.R., and Kobayashi, K.
+This repository contains all data and scripts required to fully reproduce all analyses presented in the manuscript "A multi-proxy inference of Jōmon population dynamics using Bayesian phase models, residential data, and summed probability distribution of <sup>14</sup>C dates" authored by Crema, E.R., and Kobayashi, K.
 
 The main workflow is recorded in the [log.R](./log.R) file and outputs are stored as R image files located in the [R_images](./R_images) directory.   
 
@@ -48,6 +48,7 @@ The time-series of residential and radiocarbon density have been compared via co
 │       ├── saitama.csv
 │       ├── tokyo.csv
 │       └── yamanashi.csv
+├── esm.pdf
 ├── esm.Rmd
 ├── log.R
 ├── manuscript
@@ -55,6 +56,7 @@ The time-series of residential and radiocarbon density have been compared via co
 │   │   ├── figure1.pdf
 │   │   ├── figure2.pdf
 │   │   ├── figure3.pdf
+│   │   ├── figure4.pdf
 │   │   └── figurelog.R
 │   └── tables
 │       └── table1_base.csv
