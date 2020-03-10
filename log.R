@@ -238,7 +238,7 @@ for (s in 1:nsim)
 save(spdDataCal,spdDataBin,spdDataSPD,spdDataSPD_blocks,spdDataSPD_sampled,tblocksCal,file="./R_images/spdRes.RData")
 
 ## Comparative Analysis ####
-
+load("./R_images/simdatesPithouses.RData")
 ## compute rolling correlation over 10 blocks (1,000 years)
 tblockRoll10.trap = rollCor(tblocks.trap,tblocksCal,rollsize = 10) 
 tblockRoll10.gauss = rollCor(tblocks.gauss,tblocksCal,rollsize = 10) 
