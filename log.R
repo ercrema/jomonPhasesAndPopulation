@@ -220,7 +220,7 @@ tbs = seq(7950,3050,-100)
 tbs2 = seq(8000,3000,-100)
 
 #Load C14 data image (generate by running the script in bindC14csv.R)
-load("./R_images/spdDataC14.RData")
+load("./R_images/spdC14.RData")
 spdDataCal = calibrate(spdDataC14$CRA,spdDataC14$Error,normalise=FALSE) #calibrate
 spdDataBin = binPrep(spdDataC14$SiteID,spdDataC14$CRA,h=200) #bin (200 years)
 spdDataSPD = spd(spdDataCal,timeRange=c(8000,3000)) #generate SPD
