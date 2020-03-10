@@ -204,7 +204,8 @@ text(x=7000,y=0.0013,"Chubu Highlands")
 ```
 
 
-# ESM Figure 5: Bin-Sensitivty Analysis
+## ESM Figure 5: Bin-Sensitivty Analysis
+
 
 ```{r,echo=FALSE,fig.height=5,fig.width=6.5}
 library(rcarbon)
