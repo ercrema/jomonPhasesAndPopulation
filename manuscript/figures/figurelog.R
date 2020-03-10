@@ -2,7 +2,7 @@
 library(rcarbon)
 # Load MCMC Posterior Samples 
 load("../../R_images/posteriorSamples.RData")
-phases =c("S0","S1.1","S1.2","S2.1","S2.2",paste0("S",3:8),paste0("Z",1:7),"C1","C234","C56","C78",paste0("C",9:14),paste0("K",1:8),paste0("B",1:6))
+phases =c("S0","S1.1","S1.2","S2.1","S2.2",paste0("S",3:8),paste0("Z",1:7),"C1","C2~4","C5~6","C7~8",paste0("C",9:14),paste0("K",1:8),paste0("B",1:6))
 # Convert any post-bomb age to postbomb
 postTrapezoid$posterior[which(postTrapezoid$posterior>0)]=-1
 pdf(file = "./figure1.pdf",width = 7,height = 9)
