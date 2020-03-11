@@ -221,9 +221,9 @@ tbs2 = seq(8000,3000,-100)
 
 #Load C14 data image (generate by running the script in bindC14csv.R)
 load("./R_images/spdC14.RData")
-spdDataCal = calibrate(spdDataC14$CRA,spdDataC14$Error,normalise=FALSE) #calibrate
-spdDataBin = binPrep(spdDataC14$SiteID,spdDataC14$CRA,h=200) #bin (200 years)
-spdDataSPD = spd(spdDataCal,timeRange=c(8000,3000)) #generate SPD
+spdDataCal = calibrate(spdDataC14$CRA,spdDataC14$Error,normalise=FALSE,calCurves=spdDataC14$ccurve,resOffsets=spdDataC14$dR,resErrors=spdDataC14$dR) #calibrate
+spdDataBin = binPrep(spdDataC14$SiteID,spdDataCal,h=200) #bin (200 years)
+spdDataSPD = spd(spdDataCal,bins=spdDataBin,timeRange=c(8000,3000)) #generate SPD
 spdDataSPD_blocks = spd2rc(spdDataSPD,breaks=seq(8000,3000,-100)) #aggregate by 100yrs blocks
 spdDataSPD_sampled = sampleDates(x = spdDataCal,bins = spdDataBin,nsim = nsim) #sample random dates
 
