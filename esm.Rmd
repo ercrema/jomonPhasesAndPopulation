@@ -15,6 +15,43 @@ library(trapezoid)
 
 This pdf document was rendered from an R markdown document in order to ensure full reproducibility. Readers interested in accessing the source file and associated data can download the entire repository from \href{https://github.com/ercrema/jomonPhasesAndPopulation}{{\color{blue}{\underline{github}}}}. Notice that the entire workflow requires long processing time (i.e. > 24 hours) and the use of external software (i.e. OxCal), hence major analysis were pre-processed (see the `log.R` file in the repository) and stored into a series of R images. For further information please read the `README.md` document in the repository.
 
+# Dataset Summary
+
+## ESM Table 1. Summary of Radiocarbon Dates for Bayesian Modelling
+
+```{r,echo=FALSE}
+load("./R_images/c14data.RData")
+c14data$Region=factor(c14data$Region,levels=c("Hokkaido","Tohoku","Kanto","Chubu","Hokuriku","Tokai","Kinai","ChuShikoku","Kyushu"))
+c14data$PhaseAnalysis=factor(c14data$PhaseAnalysis, levels = c("S0","S1.1","S1.2","S2.1","S2.2", paste0("S",3:8),paste0("Z",1:7), "C1","C234","C56","C78", paste0("C",9:14), paste0("K",1:8), paste0("B",1:6)))
+                             
+c14d=as.matrix(table(c14data$PhaseAnalysis,c14data$Region))  
+c14d=cbind(c14d,apply(c14d,1,sum))
+colnames(c14d)[ncol(c14d)]="Total"
+row.names(c14d)=c("S0","S1.1","S1.2","S2.1","S2.2", paste0("S",3:8),paste0("Z",1:7), "C1","C2~4","C5~6","C7~8", paste0("C",9:14), paste0("K",1:8), paste0("B",1:6))
+knitr::kable(c14d)
+```
+
+## ESM Table 2. Summary of Radiocarbon Dates for Bayesian Modelling
+
+```{r,echo=FALSE}
+load("./R_images/spdC14.RData")
+pref=c("Kanagawa","Tokyo","Saitama","Nagano","Yamanashi")
+n=numeric()
+nsites=numeric()
+
+for (i in 1:length(pref))
+{
+  tmp=subset(spdDataC14,Prefecture==pref[i])
+  n[i]=nrow(tmp)
+  nsites[i]=length(unique(tmp$SiteID))
+}
+
+spdd = data.frame(n,nsites)
+row.names(spdd)=pref
+spdd=rbind.data.frame(spdd,data.frame(n=sum(n),nsites=sum(nsites),row.names = "TOTAL"))
+knitr::kable(spdd,col.names = c("N. of dates","N. of sites"))
+```
+
 # Using different ceramic phase models
 
 ## ESM Figure 1. Posterior Distribution of Gaussian Model
@@ -151,12 +188,7 @@ for (k in 1:length(phases))
 }
 
 legend("topleft",legend=c("Trapezoid","Gaussian","Uniform"),col=col[c(3,1,2)],lwd=2,bg='white')
-
-
-
 ```
-
-
 
 
 ## ESM Figure 4. Comparison of pithouse KDE with ceramic phases based on Trapezoid, Gaussian, and Uniform Models
@@ -203,6 +235,7 @@ text(x=7000,y=0.0015,"Uniform")
 text(x=7000,y=0.0013,"Chubu Highlands")
 ```
 
+# SPD Analysis
 
 ## ESM Figure 5: Bin-Sensitivty Analysis
 
