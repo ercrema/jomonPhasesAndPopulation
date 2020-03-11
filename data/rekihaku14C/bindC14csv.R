@@ -1,5 +1,6 @@
 #### This scripts prepare the radiocarbon dates downloaded from the "Database of radiocarbon dates published in Japanese archeological research reports) (URL: https://www.rekihaku.ac.jp/up-cgi/login.pl?p=param/esrd/db_param). 
-#### Queries were carried out on the 5th of November 2019 by specifying the Prefecture (Kanagawa, Tokyo, Saitama, Nagano, and Yamanashi), and by setting "試料分類" (Material Classification) to "T: 陸産物" (Terrestial), and the "時代分類" (Period Classification) to "B:縄文時代" (Jomon). 
+#### Queries were carried out on the 5th of November 2019 and 11th of March 2020 by specifying the Prefecture (Kanagawa, Tokyo, Saitama, Nagano, and Yamanashi), and by setting "試料分類" (Material Classification) to "T: 陸産物" (Terrestial) or "M: 海産物" (Marine), and the "時代分類" (Period Classification) to "B:縄文時代" (Jomon). 
+#### Downloaded CSV files were originally encoded in Shift-JIS and re-encoded in UTF-8
 
 #### Load Packages ####
 library(dplyr)
@@ -12,9 +13,17 @@ tokyoC14 = read.csv("./tokyo_T_B_5_11_2019.csv",stringsAsFactors = FALSE)
 naganoC14 = read.csv("./nagano_T_B_5_11_2019.csv",stringsAsFactors = FALSE)
 yamanashiC14 = read.csv("./yamanashi_T_B_5_11_2019.csv",stringsAsFactors = FALSE)
 
+#### Marine Dates (no instances for nagano and yamanashi)
+kanagawaC14m = read.csv("./kanagawa_M_B_11_3_2020.csv",stringsAsFactors = FALSE)
+saitamaC14m = read.csv("./saitama_M_B_11_3_2020.csv",stringsAsFactors = FALSE)
+tokyoC14m = read.csv("./tokyo_M_B_11_3_2020.csv",stringsAsFactors = FALSE)
 
 #### Combine into a single data.frame
-spdData = rbind.data.frame(kanagawaC14,saitamaC14,tokyoC14,naganoC14,yamanashiC14)
+spdData.terrestrial = rbind.data.frame(kanagawaC14,saitamaC14,tokyoC14,naganoC14,yamanashiC14)
+spdData.marine=rbind.data.frame(tokyoC14m,saitamaC14m,kanagawaC14m)
+spdData.terrestrial$Marine=FALSE
+spdData.marine$Marine=TRUE
+spdData=rbind.data.frame(spdData.terrestrial,spdData.marine)
 
 ####Define Unique Site Identifier
 ## No sites unique identifier are provided, but some sites might have different names based on the excavation. 
@@ -63,8 +72,16 @@ length(grep("骨",as.character(spdData$試料の種類))) #only 13 cases
 spdData=spdData[-grep("骨",as.character(spdData$試料の種類)),] #Remove Bones (no shells)
 
 ####Select only relevant fields
-spdDataC14 = select(spdData,都道府県,遺跡名,SiteID,試料番号,C14年代,C14年代.)
-colnames(spdDataC14) = c("Prefecture","SiteName","SiteID","LabCode","CRA","Error")                   
+spdDataC14 = select(spdData,都道府県,遺跡名,SiteID,試料番号,C14年代,C14年代.,Marine)
+colnames(spdDataC14) = c("Prefecture","SiteName","SiteID","LabCode","CRA","Error","Marine")           
+spdDataC14$ccurve='intcal13'  
+
+#### Add Reservoir Effecy (following Shishikura et al 2007, DOI:10.1016/j.yqres.2006.09.003)
+spdDataC14$ccurve[which(spdDataC14$Marine==TRUE)]='marine13'
+spdDataC14$dR=0
+spdDataC14$dRe=0
+spdDataC14$dR[which(spdDataC14$Marine==TRUE)]=82
+spdDataC14$dRe[which(spdDataC14$Marine==TRUE)]=33
 
 save(spdDataC14,file="../../R_images/spdC14.RData")
 
