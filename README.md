@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/47395729.svg)](https://zenodo.org/badge/latestdoi/47395729)
+
 # A multi-proxy inference of Jōmon population dynamics using Bayesian phase models, residential data, and summed probability distribution of <sup>14</sup>C dates: source code, data, and scripts
 
 This repository contains all data and scripts required to fully reproduce all analyses presented in the manuscript "A multi-proxy inference of Jōmon population dynamics using Bayesian phase models, residential data, and summed probability distribution of <sup>14</sup>C dates" authored by Crema, E.R., and Kobayashi, K.
