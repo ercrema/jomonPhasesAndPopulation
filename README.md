@@ -4,6 +4,8 @@ This repository contains all data and scripts required to fully reproduce all an
 
 The main workflow is recorded in the [log.R](./log.R) file and outputs are stored as R image files located in the [R_images](./R_images) directory.   
 
+An archived version of the repository can be found on [zenodo](https://doi.org/10.5281/zenodo.3598148)
+
 ## Data Sets and Data Preparation
 
 All raw data used in the paper can be found in the [data](./data) directory. The file [c14dates.csv](./data/c14dates.csv) contains the radiocarbon dates used for the ceramic phase modelling, the folder [rekihaku14C](./data/rekihaku14C) contains CSV files of radiocarbon dates downloaded from the National Museum of Japanese History's [Database of radiocarbon dates published in Japanese archaeological research reports](https://www.rekihaku.ac.jp/up-cgi/login.pl?p=param/esrd/db_param). The R script file [bindC14csv.R](./data/rekihaku14C/bindC14csv.R) in the same directory contains details of the query used to download the data, as well as a script for aggregating the files into an R image file (`westKantoNaganoC14.RData`) contained in the [R_images](./R_images) directory. Te sub-directory [./data/suzuki](./data/suzuki) contains CSV files of Jomon pithouse counts obtained from tables on pages 88 to 93 of 「縄文時代集落の研究」("Research on Jomon Period Settlements"), by 鈴木 保彦  (Suzuki, Yasuhiko), published by 雄山閣 (Yuzankaku), Tokyo, in 2006. The data has been digitised into separate CSV files and aggregated into a long format data.frame containing a pithouse per row. This process is recorded in the R script [pithouseBinder.R](./data/suzuki/pithouseBinder.R) and the resulting data.frame is stored in the R image file [.](./R_images/pithouseData.RData).
