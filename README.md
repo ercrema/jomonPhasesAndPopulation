@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/47395729.svg)](https://zenodo.org/badge/latestdoi/47395729)
+[![DOI](https://zenodo.org/badge/215105753.svg)](https://zenodo.org/badge/latestdoi/215105753)
 
 # A multi-proxy inference of Jōmon population dynamics using Bayesian phase models, residential data, and summed probability distribution of <sup>14</sup>C dates: source code, data, and scripts
 
