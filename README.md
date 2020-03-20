@@ -4,7 +4,7 @@ This repository contains all data and scripts required to fully reproduce all an
 
 The main workflow is recorded in the [log.R](./log.R) file and outputs are stored as R image files located in the [R_images](./R_images) directory.   
 
-An archived version of the repository can be found on [zenodo](https://doi.org/10.5281/zenodo.3598148)
+An archived version of the repository can be found on [zenodo](https://doi.org/10.5281/zenodo.3719507)
 
 ## Data Sets and Data Preparation
 
