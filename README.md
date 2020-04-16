@@ -2,10 +2,10 @@
 
 # A multi-proxy inference of Jōmon population dynamics using Bayesian phase models, residential data, and summed probability distribution of <sup>14</sup>C dates: source code, data, and scripts
 
-This repository contains all data and scripts required to fully reproduce all analyses presented in the following paper 
+This repository contains all data and scripts required to fully reproduce all analyses presented in the following paper: 
 
 
-Crema, E.R., Kobayashi, K., 2020. [A multi-proxy inference of Jōmon population dynamics using bayesian phase models, residential data, and summed probability distribution of <sup>14</sup>C dates](https://doi.org/10.1016/j.jas.2020.105136). Journal of Archaeological Science 117, 105136. 
+Crema, E.R., Kobayashi, K., 2020. A multi-proxy inference of Jōmon population dynamics using bayesian phase models, residential data, and summed probability distribution of <sup>14</sup>C dates. Journal of Archaeological Science 117, 105136. DOI: https://doi.org/10.1016/j.jas.2020.105136
 
 
 The main workflow is recorded in the [log.R](./log.R) file and outputs are stored as R image files located in the [R_images](./R_images) directory.   
