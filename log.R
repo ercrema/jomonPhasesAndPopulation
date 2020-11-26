@@ -21,7 +21,7 @@ nsim = 5000
 ## Read and Prepare Data for Ceramic Phase Models####
 c14data = read.csv("./data/c14dates.csv")
 
-## Outlier Analysis ###
+## Outlier Analysis ####
 grps = unique(c14data$CombineGroup)
 grps = grps[which(!is.na(grps))]
 c14data$outlier=FALSE
@@ -38,7 +38,9 @@ c14data=subset(c14data,!outlier)
 #create R image file
 save(c14data,file="./R_images/c14data.RData")
 
-## Generate Summary Table ###
+#IntCal20 Note: Using OxCal 4.4.2 and the default IntCal20 curve produces the same subset
+
+## Generate Summary Table ####
 phases =c("S0","S1.1","S1.2","S2.1","S2.2",paste0("S",3:8),paste0("Z",1:7),"C1","C234","C56","C78",paste0("C",9:14),paste0("K",1:8),paste0("B",1:6))
 
 table1 = data.frame(phases,samples=NA,effsamples=NA,nsites=NA)
@@ -55,10 +57,7 @@ for (i in 1:length(phases))
 # store base table (to be manually edited)
 write.csv(table1,file="./manuscript/tables/table1_base.csv",row.names=FALSE)
 
-
-
-
-
+#IntCal20 Note: This effectively uses the same c14data df so the results remains unchanged. 
 
 
 ## Ceramic Phase Modelling (via OxCal) ####
