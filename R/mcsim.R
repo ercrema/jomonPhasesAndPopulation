@@ -5,12 +5,42 @@
 #'@param posterior A posterior class object created using \code{convertToArray()}.
 #'@param weights How the probability weight should be assigned to each event in case of multiple phases. One between 'equal', 'variance', or 'custom'. Default is 'variance', and 'custom' requires a list with a vector of weights to each of the multiple phases considered (argument customWeight).
 #'@example
-#' load("/Users/enryu/github/ENCOUNTER_github/encounter_jomonphases/results/model0_oxcal.RData")
-#' df=data.frame(StartPhase=c("B1","C1","C234","Z4","C234","C234"),EndPhase=c("B2","C1","C56","Z6","C234","C56"),stringsAsFactors = FALSE)
-#' posterior.a=convertToArray(model0a,"gaussian")
-#' result=sampler(df,nsim=100,posterior=posterior.a,weights="equal")
+#'source("./R/mcsim.R")
+#' source("./R/rdirichlet.R")
+#' 
+#' load("R_images/posteriorSamples.RData")
+#' 
+#' 
+#' nsim=1000
+#' # A Sample of three PitHouse with Start/End ceramic phase
+#' df=data.frame(StartPhase=c("B1","C1","Z4",),EndPhase=c("B2","C1","Z6"))
+#' 
+#' # Hypothetical Count Data 
+#' B1=90
+#' B2=67
+#' Z4=120
+#' Z5=1
+#' Z6=2
+#' 
+#' df=data.frame(StartPhase=c("B1","C1","Z4","B1"),EndPhase=c("B2","C1","Z6","B2"))
+#' weightList=vector('list',length(4))
+#' weightList[[1]]=rdirichlet(n=nsim,alpha=c(B1,B2)+1)
+#' weightList[[2]]=1
+#' weightList[[3]]=rdirichlet(n=nsim,alpha=c(Z4,Z5,Z6)+1)
+#' weightList[[4]]=rdirichlet(n=nsim,alpha=c(B1,B2)+1)
+#' 
+#' eq.prior=simTrapezoid=mcsim(df,nsim=nsim,posterior=postTrapezoid,weights="equal")
+#' var.prior=simTrapezoid=mcsim(df,nsim=nsim,posterior=postTrapezoid,weights="variance")
+#' empiricalbayes.prior=simTrapezoid=mcsim(df,nsim=nsim,posterior=postTrapezoid,weights="custom",weightList=weightList)
+#' 
+#' par(mfrow=c(3,1))
+#' {
+#'   hist(eq.prior[3,],main='Pithouse 3 (Z4-Z6), using equal prior',breaks=seq(5000,7000,50),xlim=c(7000,5000))
+#'   hist(var.prior[3,],main='Pithouse 3 Z4-Z6), using variance (duration) prior',breaks=seq(5000,7000,50),xlim=c(7000,5000))
+#'   hist(empiricalbayes.prior[3,],main='Pithouse 3 (Z4-Z6), using empricial bayes prior',breaks=seq(5000,7000,50),xlim=c(7000,5000))
+#' }
 
-mcsim = function(df,nsim,posterior,weights=c("equal","variance"),verbose=TRUE)
+mcsim = function(df,nsim,posterior,weights=c("equal","variance",'custom'),weightList=NULL,verbose=TRUE)
 {
   require(trapezoid)
   require(rcarbon)
@@ -46,19 +76,33 @@ mcsim = function(df,nsim,posterior,weights=c("equal","variance"),verbose=TRUE)
   
   for (p in 1:nrow(permUnique))
   {
-  #If single phase just a random draw from the probability distribution
-      if(permUnique[p,1]==permUnique[p,2])
-      {
-        sampled.phases[permIndex[[p]]]=as.character(permUnique[p,1])
-      }
-      if (permUnique[p,1]!=permUnique[p,2])
-      {
-        timespan = which(as.character(phases)==as.character(permUnique[p,1])):which(as.character(phases)==as.character(permUnique[p,2]))
-        timespan.weights = v[timespan]
-        nsamples = length(permIndex[[p]])
-        sampled.phases[permIndex[[p]]] = as.character(phases[sample(timespan,nsamples,prob=timespan.weights/(sum(timespan.weights)),replace=TRUE)])
-      }
+    #If single phase just a random draw from the probability distribution
+    if(permUnique[p,1]==permUnique[p,2])
+    {
+      sampled.phases[permIndex[[p]]]=as.character(permUnique[p,1])
     }
+    
+    #If multiple phase assign randomly with probabilit prob
+    if (permUnique[p,1]!=permUnique[p,2])
+    {
+      
+      timespan = which(as.character(phases)==as.character(permUnique[p,1])):which(as.character(phases)==as.character(permUnique[p,2]))
+      nsamples = length(permIndex[[p]])
+      
+      if (weights%in%c('equal','variance'))
+      { 
+        timespan.weights = v[timespan]
+        prob=timespan.weights/(sum(timespan.weights))
+      }
+      if (weights=='custom')
+      {
+        tmp.index=permIndex[[p]]
+        if (length(tmp.index)>1){tmp.index=sample(tmp.index,size=1)}
+        prob = weightList[[tmp.index]][sample(1:nsim,size=1),]
+      }
+      sampled.phases[permIndex[[p]]] = as.character(phases[sample(timespan,nsamples,prob=prob,replace=TRUE)])
+    }
+  }
     
   # Identify unique phases
   unique.phases = unique(sampled.phases)
