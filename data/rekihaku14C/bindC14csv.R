@@ -74,14 +74,15 @@ spdData=spdData[-grep("骨",as.character(spdData$試料の種類)),] #Remove Bon
 ####Select only relevant fields
 spdDataC14 = select(spdData,都道府県,遺跡名,SiteID,試料番号,C14年代,C14年代.,Marine)
 colnames(spdDataC14) = c("Prefecture","SiteName","SiteID","LabCode","CRA","Error","Marine")           
-spdDataC14$ccurve='intcal13'  
+spdDataC14$ccurve='intcal20'  
 
-#### Add Reservoir Effecy (following Shishikura et al 2007, DOI:10.1016/j.yqres.2006.09.003)
-spdDataC14$ccurve[which(spdDataC14$Marine==TRUE)]='marine13'
+#### Add Reservoir Effect (following Shishikura et al 2007, DOI:10.1016/j.yqres.2006.09.003)
+#### DeltaR calculated for Marine20 with weighted average of all samples
+spdDataC14$ccurve[which(spdDataC14$Marine==TRUE)]='marine20'
 spdDataC14$dR=0
 spdDataC14$dRe=0
-spdDataC14$dR[which(spdDataC14$Marine==TRUE)]=82
-spdDataC14$dRe[which(spdDataC14$Marine==TRUE)]=33
+spdDataC14$dR[which(spdDataC14$Marine==TRUE)]=-21
+spdDataC14$dRe[which(spdDataC14$Marine==TRUE)]=76
 
 save(spdDataC14,file="../../R_images/spdC14.RData")
 
