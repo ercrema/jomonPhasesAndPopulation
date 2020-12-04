@@ -74,8 +74,6 @@ gaussian.agreement = oxcalReadjs(x=df, model='gaussian',path='./oxcal/results/')
 uniform.agreement = oxcalReadjs(x=df, model='uniform',path='./oxcal/results/')
 trapezoid.agreement = oxcalReadjs(x=df, model='trapezoid',path='./oxcal/results/')
 
-save.image('temp.RData')
-
 ## Generate subsets of dates with agreement indices above 60 ##
 c14data.gaussian.rerun = left_join(c14data,gaussian.agreement$df,by=c("LabCode"="id")) %>%
   subset(agreement>60|combine.agreement>60)
@@ -97,40 +95,6 @@ df.trapezoid.rerun = data.frame(id=as.character(c14data.trapezoid.rerun$LabCode)
 gaussian.agreementR = oxcalReadjs(x=df.gaussian.rerun, model='gaussianR',path='./oxcal/results/')
 uniform.agreementR = oxcalReadjs(x=df.uniform.rerun, model='uniformR',path='./oxcal/results/')
 trapezoid.agreementR = oxcalReadjs(x=df.trapezoid.rerun, model='trapezoidR',path='./oxcal/results/')
-
-save.image('temp.RData')
-
-## Generate subsets of dates with agreement indices above 60 ##
-c14data.gaussian.rerun2 = left_join(c14data,gaussian.agreementR$df,by=c("LabCode"="id")) %>%
-  subset(agreement>60|combine.agreement>60)
-c14data.uniform.rerun2 = left_join(c14data,uniform.agreementR$df,by=c("LabCode"="id")) %>%
-  subset(agreement>60|combine.agreement>60)
-c14data.trapezoid.rerun2 = left_join(c14data,trapezoid.agreementR$df,by=c("LabCode"="id")) %>%
-  subset(agreement>60|combine.agreement>60)
-
-
-## Regenerate OxCal Scripts (3rd Round) ##
-oxcalScriptGen(id=c14data.gaussian.rerun2$LabCode,c14age=c14data.gaussian.rerun2$CRA,errors=c14data.gaussian.rerun2$Error,group=c14data.gaussian.rerun2$CombineGroup,phases=c14data.gaussian.rerun2$PhaseAnalysis,fn="./oxcal/oxcalscripts/gaussianR2.oxcal",mcname="mcmcGaussianR2",model="gaussian",mcnsim=nsim)
-oxcalScriptGen(id=c14data.uniform.rerun2$LabCode,c14age=c14data.uniform.rerun2$CRA,errors=c14data.uniform.rerun2$Error,group=c14data.uniform.rerun2$CombineGroup,phases=c14data.uniform.rerun2$PhaseAnalysis,fn="./oxcal/oxcalscripts/uniformR2.oxcal",mcname="mcmcUniformR2",model="uniform",mcnsim=nsim)
-oxcalScriptGen(id=c14data.trapezoid.rerun2$LabCode,c14age=c14data.trapezoid.rerun2$CRA,errors=c14data.trapezoid.rerun2$Error,group=c14data.trapezoid.rerun2$CombineGroup,phases=c14data.trapezoid.rerun2$PhaseAnalysis,fn="./oxcal/oxcalscripts/trapezoidR2.oxcal",mcname="mcmcTrapezoidR2",model="trapezoid",mcnsim=nsim)
-
-## Retrieve Oxcal Output (from Oxcal Online - notice this requires about 70-90 hours of analysis) ##
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # Read MCMC samples (excluding first (pass number) and last (empty) column)
 gaussian.samples = read.csv("./oxcal/results/mcmcGaussianR.csv")[,-c(1,86)] 
@@ -244,9 +208,6 @@ densSummary.unif = data.frame(CalBP=8000:3000,
                               mean = apply(densMat.unif,1,mean))
 
 save(tbs,tbs2,tblocks.trap,tblocks.gauss,tblocks.unif,densSummary.trap.swkanto,densSummary.trap.swkanto,densSummary.unif.swkanto,densSummary.trap.chubukochi,densSummary.gauss.swkanto,densSummary.gauss.chubukochi,densSummary.unif.chubukochi,densSummary.gauss,densSummary.unif,densSummary.trap,file="./R_images/simdatesPithouses.RData")
-
-
-
 
 
 
