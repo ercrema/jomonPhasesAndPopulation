@@ -62,7 +62,7 @@ write.csv(table1,file="./manuscript/tables/table1_base.csv",row.names=FALSE)
 
 ## Ceramic Phase Modelling (via OxCal) ####
 
-## Generate OxCal Script ##
+## Generate OxCal Script (1st Round) ##
 oxcalScriptGen(id=c14data$LabCode,c14age=c14data$CRA,errors=c14data$Error,group=c14data$CombineGroup,phases=c14data$PhaseAnalysis,fn="./oxcal/oxcalscripts/gaussian.oxcal",mcname="mcmcGaussian",model="gaussian",mcnsim=nsim)
 oxcalScriptGen(id=c14data$LabCode,c14age=c14data$CRA,errors=c14data$Error,group=c14data$CombineGroup,phases=c14data$PhaseAnalysis,fn="./oxcal/oxcalscripts/uniform.oxcal",mcname="mcmcUniform",model="uniform",mcnsim=nsim)
 oxcalScriptGen(id=c14data$LabCode,c14age=c14data$CRA,errors=c14data$Error,group=c14data$CombineGroup,phases=c14data$PhaseAnalysis,fn="./oxcal/oxcalscripts/trapezoid.oxcal",mcname="mcmcTrapezoid",model="trapezoid",mcnsim=nsim)
@@ -74,6 +74,8 @@ gaussian.agreement = oxcalReadjs(x=df, model='gaussian',path='./oxcal/results/')
 uniform.agreement = oxcalReadjs(x=df, model='uniform',path='./oxcal/results/')
 trapezoid.agreement = oxcalReadjs(x=df, model='trapezoid',path='./oxcal/results/')
 
+save.image('temp.RData')
+
 ## Generate subsets of dates with agreement indices above 60 ##
 c14data.gaussian.rerun = left_join(c14data,gaussian.agreement$df,by=c("LabCode"="id")) %>%
   subset(agreement>60|combine.agreement>60)
@@ -82,7 +84,7 @@ c14data.uniform.rerun = left_join(c14data,uniform.agreement$df,by=c("LabCode"="i
 c14data.trapezoid.rerun = left_join(c14data,trapezoid.agreement$df,by=c("LabCode"="id")) %>%
   subset(agreement>60|combine.agreement>60)
 
-## Regenerate OxCal Scripts ##
+## Regenerate OxCal Scripts (2nd Round) ##
 oxcalScriptGen(id=c14data.gaussian.rerun$LabCode,c14age=c14data.gaussian.rerun$CRA,errors=c14data.gaussian.rerun$Error,group=c14data.gaussian.rerun$CombineGroup,phases=c14data.gaussian.rerun$PhaseAnalysis,fn="./oxcal/oxcalscripts/gaussianR.oxcal",mcname="mcmcGaussianR",model="gaussian",mcnsim=nsim)
 oxcalScriptGen(id=c14data.uniform.rerun$LabCode,c14age=c14data.uniform.rerun$CRA,errors=c14data.uniform.rerun$Error,group=c14data.uniform.rerun$CombineGroup,phases=c14data.uniform.rerun$PhaseAnalysis,fn="./oxcal/oxcalscripts/uniformR.oxcal",mcname="mcmcUniformR",model="uniform",mcnsim=nsim)
 oxcalScriptGen(id=c14data.trapezoid.rerun$LabCode,c14age=c14data.trapezoid.rerun$CRA,errors=c14data.trapezoid.rerun$Error,group=c14data.trapezoid.rerun$CombineGroup,phases=c14data.trapezoid.rerun$PhaseAnalysis,fn="./oxcal/oxcalscripts/trapezoidR.oxcal",mcname="mcmcTrapezoidR",model="trapezoid",mcnsim=nsim)
@@ -95,6 +97,40 @@ df.trapezoid.rerun = data.frame(id=as.character(c14data.trapezoid.rerun$LabCode)
 gaussian.agreementR = oxcalReadjs(x=df.gaussian.rerun, model='gaussianR',path='./oxcal/results/')
 uniform.agreementR = oxcalReadjs(x=df.uniform.rerun, model='uniformR',path='./oxcal/results/')
 trapezoid.agreementR = oxcalReadjs(x=df.trapezoid.rerun, model='trapezoidR',path='./oxcal/results/')
+
+save.image('temp.RData')
+
+## Generate subsets of dates with agreement indices above 60 ##
+c14data.gaussian.rerun2 = left_join(c14data,gaussian.agreementR$df,by=c("LabCode"="id")) %>%
+  subset(agreement>60|combine.agreement>60)
+c14data.uniform.rerun2 = left_join(c14data,uniform.agreementR$df,by=c("LabCode"="id")) %>%
+  subset(agreement>60|combine.agreement>60)
+c14data.trapezoid.rerun2 = left_join(c14data,trapezoid.agreementR$df,by=c("LabCode"="id")) %>%
+  subset(agreement>60|combine.agreement>60)
+
+
+## Regenerate OxCal Scripts (3rd Round) ##
+oxcalScriptGen(id=c14data.gaussian.rerun2$LabCode,c14age=c14data.gaussian.rerun2$CRA,errors=c14data.gaussian.rerun2$Error,group=c14data.gaussian.rerun2$CombineGroup,phases=c14data.gaussian.rerun2$PhaseAnalysis,fn="./oxcal/oxcalscripts/gaussianR2.oxcal",mcname="mcmcGaussianR2",model="gaussian",mcnsim=nsim)
+oxcalScriptGen(id=c14data.uniform.rerun2$LabCode,c14age=c14data.uniform.rerun2$CRA,errors=c14data.uniform.rerun2$Error,group=c14data.uniform.rerun2$CombineGroup,phases=c14data.uniform.rerun2$PhaseAnalysis,fn="./oxcal/oxcalscripts/uniformR2.oxcal",mcname="mcmcUniformR2",model="uniform",mcnsim=nsim)
+oxcalScriptGen(id=c14data.trapezoid.rerun2$LabCode,c14age=c14data.trapezoid.rerun2$CRA,errors=c14data.trapezoid.rerun2$Error,group=c14data.trapezoid.rerun2$CombineGroup,phases=c14data.trapezoid.rerun2$PhaseAnalysis,fn="./oxcal/oxcalscripts/trapezoidR2.oxcal",mcname="mcmcTrapezoidR2",model="trapezoid",mcnsim=nsim)
+
+## Retrieve Oxcal Output (from Oxcal Online - notice this requires about 70-90 hours of analysis) ##
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Read MCMC samples (excluding first (pass number) and last (empty) column)
 gaussian.samples = read.csv("./oxcal/results/mcmcGaussianR.csv")[,-c(1,86)] 
