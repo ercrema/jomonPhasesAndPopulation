@@ -602,7 +602,6 @@ R_Date("BETA-161101",4160,40);
 R_Date("BETA-159264",4170,40);
 R_Date("MTC-4334",4175,35);
 R_Date("BETA-159265",4140,40);
-R_Date("BETA-159266",4060,40);
 R_Date("MTC-4335",4170,35);
 R_Date("BETA-159267",4200,40);
 R_Date("BETA-159268",4210,40);
@@ -908,7 +907,6 @@ R_Date("IAAA-31582",4570,30);
 R_Date("IAAA-30271",4580,50);
 R_Date("IAAA-30272",4590,50);
 R_Date("BETA-164506",4560,40);
-R_Date("BETA-184554",4470,40);
 R_Date("IAAA-160575",4516,29);
 R_Date("IAAA-160577",4522,27);
 R_Date("IAAA-160578",4533,28);
@@ -1114,6 +1112,11 @@ R_Combine("Combination22")
 {
 R_Date("PLD-4150",3840,25){Outlier(0.05);};
 R_Date("PLD-4151",3815,30){Outlier(0.05);};
+};
+R_Combine("Combination23")
+{
+R_Date("MTC-6946",3930,35){Outlier(0.05);};
+R_Date("PLD-5298",3945,25){Outlier(0.05);};
 };
 R_Combine("Combination25")
 {
@@ -1531,7 +1534,6 @@ R_Date("BETA-194633",7240,40);
 R_Date("BETA-205862",7340,40);
 R_Date("BETA-205863",7370,40);
 R_Date("MTC-5081",7155,45);
-R_Date("BETA-197018",7420,40);
 R_Date("IAAA-101192",7340,30);
 R_Date("IAAA-180495",7301,30);
 R_Date("IAAA-180496",7235,35);
@@ -2068,7 +2070,6 @@ R_Combine("Combination67")
 R_Date("TKA-14581",10990,80){Outlier(0.05);};
 R_Date("TKA-14615",11000,60){Outlier(0.05);};
 };
-R_Date("BETA-138898",10260,40);
 R_Date("BETA-148515",12360,50);
 R_Date("BETA-130326",11180,40);
 R_Date("BETA-191831",11170,50);

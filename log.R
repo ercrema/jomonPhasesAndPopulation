@@ -21,7 +21,7 @@ nsim = 5000
 ## Read and Prepare Data for Ceramic Phase Models####
 c14data = read.csv("./data/c14dates.csv")
 
-## Outlier Analysis ###
+## Outlier Analysis ####
 grps = unique(c14data$CombineGroup)
 grps = grps[which(!is.na(grps))]
 c14data$outlier=FALSE
@@ -38,7 +38,9 @@ c14data=subset(c14data,!outlier)
 #create R image file
 save(c14data,file="./R_images/c14data.RData")
 
-## Generate Summary Table ###
+#IntCal20 Note: Using OxCal 4.4.2 and the default IntCal20 curve produces the same subset
+
+## Generate Summary Table ####
 phases =c("S0","S1.1","S1.2","S2.1","S2.2",paste0("S",3:8),paste0("Z",1:7),"C1","C234","C56","C78",paste0("C",9:14),paste0("K",1:8),paste0("B",1:6))
 
 table1 = data.frame(phases,samples=NA,effsamples=NA,nsites=NA)
@@ -55,15 +57,12 @@ for (i in 1:length(phases))
 # store base table (to be manually edited)
 write.csv(table1,file="./manuscript/tables/table1_base.csv",row.names=FALSE)
 
-
-
-
-
+#IntCal20 Note: This effectively uses the same c14data df so the results remains unchanged. 
 
 
 ## Ceramic Phase Modelling (via OxCal) ####
 
-## Generate OxCal Script ##
+## Generate OxCal Script (1st Round) ##
 oxcalScriptGen(id=c14data$LabCode,c14age=c14data$CRA,errors=c14data$Error,group=c14data$CombineGroup,phases=c14data$PhaseAnalysis,fn="./oxcal/oxcalscripts/gaussian.oxcal",mcname="mcmcGaussian",model="gaussian",mcnsim=nsim)
 oxcalScriptGen(id=c14data$LabCode,c14age=c14data$CRA,errors=c14data$Error,group=c14data$CombineGroup,phases=c14data$PhaseAnalysis,fn="./oxcal/oxcalscripts/uniform.oxcal",mcname="mcmcUniform",model="uniform",mcnsim=nsim)
 oxcalScriptGen(id=c14data$LabCode,c14age=c14data$CRA,errors=c14data$Error,group=c14data$CombineGroup,phases=c14data$PhaseAnalysis,fn="./oxcal/oxcalscripts/trapezoid.oxcal",mcname="mcmcTrapezoid",model="trapezoid",mcnsim=nsim)
@@ -83,7 +82,7 @@ c14data.uniform.rerun = left_join(c14data,uniform.agreement$df,by=c("LabCode"="i
 c14data.trapezoid.rerun = left_join(c14data,trapezoid.agreement$df,by=c("LabCode"="id")) %>%
   subset(agreement>60|combine.agreement>60)
 
-## Regenerate OxCal Scripts ##
+## Regenerate OxCal Scripts (2nd Round) ##
 oxcalScriptGen(id=c14data.gaussian.rerun$LabCode,c14age=c14data.gaussian.rerun$CRA,errors=c14data.gaussian.rerun$Error,group=c14data.gaussian.rerun$CombineGroup,phases=c14data.gaussian.rerun$PhaseAnalysis,fn="./oxcal/oxcalscripts/gaussianR.oxcal",mcname="mcmcGaussianR",model="gaussian",mcnsim=nsim)
 oxcalScriptGen(id=c14data.uniform.rerun$LabCode,c14age=c14data.uniform.rerun$CRA,errors=c14data.uniform.rerun$Error,group=c14data.uniform.rerun$CombineGroup,phases=c14data.uniform.rerun$PhaseAnalysis,fn="./oxcal/oxcalscripts/uniformR.oxcal",mcname="mcmcUniformR",model="uniform",mcnsim=nsim)
 oxcalScriptGen(id=c14data.trapezoid.rerun$LabCode,c14age=c14data.trapezoid.rerun$CRA,errors=c14data.trapezoid.rerun$Error,group=c14data.trapezoid.rerun$CombineGroup,phases=c14data.trapezoid.rerun$PhaseAnalysis,fn="./oxcal/oxcalscripts/trapezoidR.oxcal",mcname="mcmcTrapezoidR",model="trapezoid",mcnsim=nsim)
@@ -209,9 +208,6 @@ densSummary.unif = data.frame(CalBP=8000:3000,
                               mean = apply(densMat.unif,1,mean))
 
 save(tbs,tbs2,tblocks.trap,tblocks.gauss,tblocks.unif,densSummary.trap.swkanto,densSummary.trap.swkanto,densSummary.unif.swkanto,densSummary.trap.chubukochi,densSummary.gauss.swkanto,densSummary.gauss.chubukochi,densSummary.unif.chubukochi,densSummary.gauss,densSummary.unif,densSummary.trap,file="./R_images/simdatesPithouses.RData")
-
-
-
 
 
 
