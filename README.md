@@ -6,7 +6,7 @@ This repository contains an updated version of the data and scripts used in the 
 
 Crema, E.R., Kobayashi, K., 2020. A multi-proxy inference of Jōmon population dynamics using bayesian phase models, residential data, and summed probability distribution of <sup>14</sup>C dates. Journal of Archaeological Science 117, 105136. DOI: https://doi.org/10.1016/j.jas.2020.105136
 
-The original repository contained scripts based on the IntCal13 and Marine13 calibration curves and can be accessed [here](https://github.com/ercrema/jomonPhasesAndPopulation/tree/v.2.0). Analyses and results contained in this repository are based on the IntCal20 and Marine20 curves and contains. This version contains also an updated version of the function `mcsim()` as well as a new rmarkdown file with a [short Rmarkdown tutorial](./calibrating_jomon_ceramic_phases.Rmd) on how to use the function with different datasets.
+The original repository contained scripts based on the IntCal13 and Marine13 calibration curves and can be accessed [here](https://github.com/ercrema/jomonPhasesAndPopulation/tree/v.2.1). Analyses and results contained in this repository are based on the IntCal20 and Marine20 curves and contains. This version contains also an updated version of the function `mcsim()` as well as a new rmarkdown file with a [short Rmarkdown tutorial](./calibrating_jomon_ceramic_phases.Rmd) on how to use the function with different datasets.
 
 The main workflow is recorded in the [log.R](./log.R) file and outputs are stored as R image files located in the [R_images](./R_images) directory.   
 
