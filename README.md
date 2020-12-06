@@ -2,11 +2,11 @@
 
 # A multi-proxy inference of Jōmon population dynamics using Bayesian phase models, residential data, and summed probability distribution of <sup>14</sup>C dates: source code, data, and scripts
 
-This repository contains all data and scripts required to fully reproduce all analyses presented in the following paper: 
-
+This repository contains an updated version of the data and scripts used in the following paper.
 
 Crema, E.R., Kobayashi, K., 2020. A multi-proxy inference of Jōmon population dynamics using bayesian phase models, residential data, and summed probability distribution of <sup>14</sup>C dates. Journal of Archaeological Science 117, 105136. DOI: https://doi.org/10.1016/j.jas.2020.105136
 
+The original repository contained scripts based on the IntCal13 and Marine13 calibration curves and can be accessed [here](https://github.com/ercrema/jomonPhasesAndPopulation/tree/v.2.0). Analyses and results contained in this repository are based on the IntCal20 and Marine20 curves and contains. This version contains also an updated version of the function `mcsim()` as well as a new rmarkdown file with a [short tutorial](./calibrating_jomon_ceramic_phases.html) on how to use the function with different datasets.
 
 The main workflow is recorded in the [log.R](./log.R) file and outputs are stored as R image files located in the [R_images](./R_images) directory.   
 
@@ -16,7 +16,7 @@ All raw data used in the paper can be found in the [data](./data) directory. The
 
 ## Bayesian ceramic phase modelling
 
-Bayesian modelling have been carried out using [OxCal](https://c14.arch.ox.ac.uk/oxcal/OxCal.html), with the preparation of OxCal scripts done in R. The analyses was conducted in three stages. Firstly, potential outliers were detected within sets of dates associated with the same event (e.g. different organic residues from the same vessel). This was achievied by using the `outlierExcluder()` function (stored [here](./R/outlierAnalysis.R)) which internally calls OxCal from R using the [oxcAAR](https://CRAN.R-project.org/package=oxcAAR) package. The function eliminates potential outliers from the initial set of radiocarbon dates and result of this routine was stored in the R image file [c14data.RData](./R_images/c14data.RData). 
+Bayesian modelling have been carried out using [OxCal v4.4](https://c14.arch.ox.ac.uk/oxcal/OxCal.html), with the preparation of OxCal scripts done in R. The analyses was conducted in three stages. Firstly, potential outliers were detected within sets of dates associated with the same event (e.g. different organic residues from the same vessel). This was achievied by using the `outlierExcluder()` function (stored [here](./R/outlierAnalysis.R)) which internally calls OxCal from R using the [oxcAAR](https://CRAN.R-project.org/package=oxcAAR) package. The function eliminates potential outliers from the initial set of radiocarbon dates and result of this routine was stored in the R image file [c14data.RData](./R_images/c14data.RData). 
 
 The second step of analysis consisted in creating OxCal scripts for different probability distributions emulating putative _within-phase uncertainty_. This was achieved by using the `oxcalScriptGen()` function (located [in this file](./R/oxcalScriptCreator.R). The output scripts (stored in the directory [./oxcal/oxcalscripts](./oxcal/oxcalscripts)) were then loaded into OxCal for analyses. The results of the Bayesian analyses are stored in the directory [./oxcal/results](./oxcal/results), and include the .csv storing the posterior samples and a JavaScript file (.js) containing key statistics such as individual and overall agreement indices, read in R using the `oxcalReadjs()` function (see source code [here](./R/oxcalReadjs.R)). 
 
@@ -132,7 +132,7 @@ attached base packages:
 [1] stats     graphics  grDevices utils     methods   base     
 
 other attached packages:
-[1] readr_1.3.1     trapezoid_2.0-0 TTR_0.23-5      rcarbon_1.3.0  
+[1] readr_1.3.1     trapezoid_2.0-0 TTR_0.23-5      rcarbon_1.4.1  
 [5] oxcAAR_1.0.0    dplyr_0.8.3     magrittr_1.5    nvimcom_0.9-82 
 
 loaded via a namespace (and not attached):
