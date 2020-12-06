@@ -309,12 +309,14 @@ The main argument for the `mcsim()` is a data.frame where each row contains an o
 
 For example, suppose you have four pit-dwellings dated as follows: 
 
-* PithouseA; Daigi8a ~ Daigi8b
-* PithouseB; Horinouchi ~ Kasori B
-* PithouseC; Horinouchi ~ Kasori B
-* PithouseD; Moroiso a
+* Pit-houseA; Daigi8a ~ Daigi8b
+* Pit-houseB; Horinouchi ~ Kasori B
+* Pit-houseC; Horinouchi ~ Kasori B
+* Pit-houseD; Moroiso a
 
-The intput data.frame would be constructed as follows:
+That is pithouse A was constructed at _some point in time_ between _Daigi 8a_ and _Daigi 8b_. We will refer to such interval of possible existence as the _timespan_ of pitouse A, borrowing a terminology used in aoristic analysis. Thus in this example pithouse B and pithouse C have the same timespan, whilst the timespan of pithouse D matches the _Moroiso a_ phase, and as such it has no _phase assaignment uncertainty_. 
+
+In order to process the data above, the input data.frame should be constructed as follows:
 
 ```{r}
 StartPhase = c('C10','K2','K2','Z4')
@@ -324,26 +326,26 @@ rownames(df) = c('A','B','C','D') #this is not strictly necessary
 print(df)
 ```
 
-Notice that there are as many rows as the number of entities to be dated (i.e. chronologically identical iterms should be repeated) and that entities with no _Phase assignment uncertainty_ (i.e. assigned to a single phase) would have identical entries for the `$StartPhase` and `$EndPhase` fields.
+Notice that there are as many rows as the number of entities to be dated (i.e. chronologically identical items should be repeated) and that entries with no _Phase assignment uncertainty_ (i.e. assigned to a single phase) would have identical entries for the `$StartPhase` and `$EndPhase` fields.
 
 ## Using the mcsim() function
 
-The `mcsim()` function randomly generates user-defined number (argument `nsim`) of calendar dates taking into account _phase assignment uncertainty_, _within-phase uncertainty_, and _phase boundary uncertainty_. The _within-phase uncertainty_  and _phase boundary uncertainty_ are modelled by providing pre-processed posterior samples contained the image file `posteriorSamples.RData`. These includes trapezoid (`postTrapezoid`), Gaussian (`postGaussian`), and uniform (`postUniform`) distributions. _Phase assignment uncertainty_ is controlled by the argument `weights` and could be one between `equal` (for equal probability assigned to each possible phase in the interval),  `variance` (for probabilities proportional to the duration of possibles phases in the interval), and `custom` (for user defined probabilities). For example, the following generates 1000 calendar dates using the Trapezoid distribution and a duration based modelling of _phase assignment uncertainty_:
+The `mcsim()` function randomly generates user-defined number (argument `nsim`) of calendar dates taking into account _phase assignment uncertainty_, _within-phase uncertainty_, and _phase boundary uncertainty_. The _within-phase uncertainty_  and _phase boundary uncertainty_ are modelled by providing pre-processed posterior samples contained the image file `posteriorSamples.RData`. These includes trapezoid (`postTrapezoid`), Gaussian (`postGaussian`), and uniform (`postUniform`) distributions. _Phase assignment uncertainty_ is controlled by the argument `weights` and could be one between `equal` (for equal probability assigned to each possible phase in the timespan),  `variance` (for probabilities proportional to the duration of possibles phases within the timespan), and `custom` (for user defined probabilities). For example, the following generates 1000 calendar dates using the Trapezoid distribution and a duration based modelling of _phase assignment uncertainty_:
 
 ```{r}
-res=mcsim(df,nsim=1000,posterior=postTrapezoid,weights="variance")
+res=mcsim(df,nsim=1000,posterior=postTrapezoid,weights="variance",verbose=FALSE)
 ```
 
 The resulting object is a matrix with each row corresponding to each event. Thus the estimated age of pithouse A would be:
 
 ```{r}
 eventA = res[1,]
-plot(density(eventA),xlim=c(5200,4500),xlab='Cal BP',main='Event A')
+plot(density(eventA),xlim=c(5200,4500),xlab='Cal BP',main='Date of Pithouse A')
 abline(v=median(eventA),lwd=2,lty=2)
 quantile(eventA,prob=c(0.025,0.975)) #95% percentile interval
 ```
 
-The 'custom' option for the weights argument allows for user-defined probabilities to be assigned for each phases within the interval of possible existence for each object. This is defined by assigning a list to the argument `weightList`. For example:
+The 'custom' option for the weights argument allows for user-defined probabilities to be assigned for each phases within the timespan of each object. This is defined by assigning a list to the argument `weightList`. For example:
 
 ```{r}
 w = vector('list',length=4)
@@ -352,10 +354,10 @@ w[[2]] = c(0.2,0.3,0.2,0.2,0.1)
 w[[3]] = c(0.1,0.3,0.3,0.2,0.1)
 w[[4]] = c(1)
 
-res=mcsim(df,nsim=1000,posterior=postTrapezoid,weights="variance",weightList = w)
+res=mcsim(df,nsim=1000,posterior=postTrapezoid,weights="variance",weightList = w,verbose=FALSE)
 ```
 
-It is also possible to provide for each element of `weightList` a matrix instead of vector, with the number of columns corresponding to the number of phases within the timespan. The `mcsim()` function will randomly select a row from sum matrix for each iteration. This approach can, for example, be used when the _phase assignement uncertainty_ is modelled based on the observed frequencies of events for each phase. The script below illustrates a workflow where the Dirichlet distribution is used as a conjugate prior of a multinomial distribution:
+It is also possible to provide for each element of `weightList` a matrix instead of vector, with the number of columns corresponding to the number of phases within the timespan. The `mcsim()` function will select, on each iteration, a random row from such matrix. This approach can, for example, be used if one wishes to model _phase assignement uncertainty_ based on the known observed frequencies of events without an assignment uncertainty. The script below is a sample workflow where the Dirichlet distribution is used as a a conjugate prior to estimate the weights for each phase within the timespan of each pit-house.
 
 ```{r}
 ### Function for generating sample probabilities from the dirichlet distribution ### 
@@ -384,7 +386,7 @@ w2[[1]]=rdirichlet(n=1000,alpha=c(C10,C11))
 w2[[2]] = w2[[3]]=rdirichlet(n=1000,alpha=c(K2,K3,K4,K5,K6))
 w2[[4]] = c(1)
 
-res=mcsim(df,nsim=1000,posterior=postTrapezoid,weights="custom",weightList = w2)
+res=mcsim(df,nsim=1000,posterior=postTrapezoid,weights="custom",weightList = w2,verbose=FALSE)
 ```
 
 
