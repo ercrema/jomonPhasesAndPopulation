@@ -5,15 +5,14 @@
 #'@param posterior A posterior class object created using \code{convertToArray()}.
 #'@param weights How the probability weight should be assigned to each event in case of multiple phases. One between 'equal', 'variance', or 'custom'. Default is 'variance', and 'custom' requires a list with a vector of weights to each of the multiple phases considered (argument customWeight).
 #'@example
-#'source("./R/mcsim.R")
+#' source("./R/mcsim.R")
 #' source("./R/rdirichlet.R")
-#' 
+#' source("./R/utilities.R")
 #' load("R_images/posteriorSamples.RData")
 #' 
 #' 
 #' nsim=1000
-#' # A Sample of three PitHouse with Start/End ceramic phase
-#' df=data.frame(StartPhase=c("B1","C1","Z4",),EndPhase=c("B2","C1","Z6"))
+#' # A Sample of four PitHouse with Start/End ceramic phase
 #' 
 #' # Hypothetical Count Data 
 #' B1=90
@@ -29,15 +28,16 @@
 #' weightList[[3]]=rdirichlet(n=nsim,alpha=c(Z4,Z5,Z6)+1)
 #' weightList[[4]]=rdirichlet(n=nsim,alpha=c(B1,B2)+1)
 #' 
-#' eq.prior=simTrapezoid=mcsim(df,nsim=nsim,posterior=postTrapezoid,weights="equal")
-#' var.prior=simTrapezoid=mcsim(df,nsim=nsim,posterior=postTrapezoid,weights="variance")
-#' empiricalbayes.prior=simTrapezoid=mcsim(df,nsim=nsim,posterior=postTrapezoid,weights="custom",weightList=weightList)
+#' set.seed(123)
+#' eq.prior=mcsim(df,nsim=nsim,posterior=postTrapezoid,weights="equal")
+#' var.prior=mcsim(df,nsim=nsim,posterior=postTrapezoid,weights="variance")
+#' empiricalbayes.prior=mcsim(df,nsim=nsim,posterior=postTrapezoid,weights="custom",weightList=weightList)
 #' 
 #' par(mfrow=c(3,1))
 #' {
 #'   hist(eq.prior[3,],main='Pithouse 3 (Z4-Z6), using equal prior',breaks=seq(5000,7000,50),xlim=c(7000,5000))
-#'   hist(var.prior[3,],main='Pithouse 3 Z4-Z6), using variance (duration) prior',breaks=seq(5000,7000,50),xlim=c(7000,5000))
-#'   hist(empiricalbayes.prior[3,],main='Pithouse 3 (Z4-Z6), using empricial bayes prior',breaks=seq(5000,7000,50),xlim=c(7000,5000))
+#'   hist(var.prior[3,],main='Pithouse 3 (Z4-Z6), using variance (duration) prior',breaks=seq(5000,7000,50),xlim=c(7000,5000))
+#'   hist(empiricalbayes.prior[3,],main='Pithouse 3 (Z4-Z6), using empirical Bayes prior',breaks=seq(5000,7000,50),xlim=c(7000,5000))
 #' }
 
 mcsim = function(df,nsim,posterior,weights=c("equal","variance",'custom'),weightList=NULL,verbose=TRUE)
@@ -49,6 +49,13 @@ mcsim = function(df,nsim,posterior,weights=c("equal","variance",'custom'),weight
   
 #Extract Phase Names
   phases=factor(dimnames(posterior$posterior)[[1]],levels=dimnames(posterior$posterior)[[1]],ordered=TRUE)
+  if (!all(colnames(df)%in%c('StartPhase','EndPhase')))
+  {
+  warning('Incorrect column names in df. The first column will be treated as "StartPhase" and the second as "EndPhase"')
+  colnames(df)=c('StartPhase','EndPhase')
+  }
+  
+  if (!all(all(df$StartPhase%in%as.character(phases))&all(df$EndPhase%in%as.character(phases)))){stop('Incorrect phasenames in df')}
   
 # Identify unique permutation of Start/Ends and number of cases
   permUnique = unique(df)
